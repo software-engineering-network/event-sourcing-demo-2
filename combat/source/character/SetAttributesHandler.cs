@@ -17,15 +17,13 @@
 
         public Result Handle(SetAttributes command)
         {
-            var (characterId, attack, defense, hitPoints, magicAttack, magicDefense, speed) = command;
-            var character = _characterRepository.Find(characterId);
-            var attributes = new Attributes(attack, defense, hitPoints, magicAttack, magicDefense, speed);
+            var character = _characterRepository.Find(command.CharacterId);
 
-            character.SetAttributes(attributes);
+            character.SetAttributes(command.Attributes);
 
             var updatedCharacter = _characterRepository
                 .Save(character)
-                .Find(characterId);
+                .Find(character.Id);
 
             return new(Status.Succeeded);
         }

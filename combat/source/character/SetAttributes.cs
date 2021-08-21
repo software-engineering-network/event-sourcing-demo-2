@@ -16,47 +16,18 @@ namespace EventSourcingDemo.Combat
             ushort speed
         )
         {
-            Attack = attack;
-            CharacterId = characterId;
-            Defense = defense;
-            HitPoints = hitPoints;
             Id = Guid.NewGuid();
-            MagicAttack = magicAttack;
-            MagicDefense = magicDefense;
-            Speed = speed;
+            CharacterId = characterId;
+            Attributes = new Attributes(attack, defense, hitPoints, magicAttack, magicDefense, speed);
         }
 
         #endregion
 
         #region Public Interface
 
-        public ushort Attack { get; }
+        public Attributes Attributes { get; set; }
         public Guid CharacterId { get; }
-        public ushort Defense { get; }
-        public ushort HitPoints { get; }
         public Guid Id { get; }
-        public ushort MagicAttack { get; }
-        public ushort MagicDefense { get; }
-        public ushort Speed { get; }
-
-        public void Deconstruct(
-            out Guid characterId,
-            out ushort attack,
-            out ushort defense,
-            out ushort hitPoints,
-            out ushort magicAttack,
-            out ushort magicDefense,
-            out ushort speed
-        )
-        {
-            characterId = CharacterId;
-            attack = Attack;
-            defense = Defense;
-            hitPoints = HitPoints;
-            magicAttack = MagicAttack;
-            magicDefense = MagicDefense;
-            speed = Speed;
-        }
 
         #endregion
     }
