@@ -39,7 +39,7 @@ namespace EventSourcingDemo.Combat
             _events.Add(attributesSet);
 
             /*
-             * This appears to be aesthetic-only.
+             * This seems to be aesthetic-only.
              * The final object won't be stored, only the event.
              * So really, this is for testing purposes.
              */
