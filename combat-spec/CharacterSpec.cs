@@ -17,13 +17,14 @@ namespace EventSourcingDemo.CombatSpec
         }
 
         [Fact]
-        public void WhenModifyingAttributes()
+        public void WhenSettingAttributes()
         {
             var character = new Character();
             var attributes = new Attributes(20, 0, 20, 10, 2, 20);
 
             character.SetAttributes(attributes);
 
+            character.Events.Should().Contain(x => x.Is(typeof(Character.AttributesSet)));
             character.Attributes.Should().Be(attributes);
         }
 

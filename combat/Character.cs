@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace EventSourcingDemo.Combat
 {
     public class Character
     {
+        private readonly List<Event> _events = new();
+
         #region Creation
 
         public Character(Guid id = default)
@@ -16,20 +19,23 @@ namespace EventSourcingDemo.Combat
         #region Public Interface
 
         public Attributes Attributes { get; private set; }
+        public IReadOnlyCollection<Event> Events => _events.AsReadOnly();
         public Guid Id { get; }
 
         public Character SetAttributes(Attributes attributes)
         {
             var attributesSet = new AttributesSet(attributes, Id);
 
-            return Process(attributesSet);
+            _events.Add(attributesSet);
+
+            return Handler(attributesSet);
         }
 
         #endregion
 
         #region Private Interface
 
-        private Character Process(AttributesSet @event)
+        private Character Handler(AttributesSet @event)
         {
             Attributes = @event.Attributes;
             return this;
@@ -37,7 +43,7 @@ namespace EventSourcingDemo.Combat
 
         #endregion
 
-        public class AttributesSet
+        public class AttributesSet : Event
         {
             #region Creation
 
@@ -48,7 +54,6 @@ namespace EventSourcingDemo.Combat
             {
                 Attributes = attributes;
                 CharacterId = characterId;
-                Id = Guid.NewGuid();
             }
 
             #endregion
@@ -57,7 +62,6 @@ namespace EventSourcingDemo.Combat
 
             public Attributes Attributes { get; }
             public Guid CharacterId { get; }
-            public Guid Id { get; }
 
             #endregion
         }

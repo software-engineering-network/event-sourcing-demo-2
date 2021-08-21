@@ -1,5 +1,8 @@
-﻿namespace EventSourcingDemo.Combat
+﻿using System.Diagnostics;
+
+namespace EventSourcingDemo.Combat
 {
+    [DebuggerDisplay("A:{Attack} D:{Defense} HP:{HitPoints} MA:{MagicAttack} MD:{MagicDefense} S:{Speed}")]
     public class Attributes
     {
         #region Creation
