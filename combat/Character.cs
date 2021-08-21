@@ -28,6 +28,11 @@ namespace EventSourcingDemo.Combat
 
             _events.Add(attributesSet);
 
+            /*
+             * This appears to be aesthetic-only.
+             * The final object won't be stored, only the event.
+             * So really, this is for testing purposes.
+             */
             return Handler(attributesSet);
         }
 
@@ -35,9 +40,9 @@ namespace EventSourcingDemo.Combat
 
         #region Private Interface
 
-        private Character Handler(AttributesSet @event)
+        private Character Handler(AttributesSet e)
         {
-            Attributes = @event.Attributes;
+            Attributes = e.Attributes;
             return this;
         }
 
