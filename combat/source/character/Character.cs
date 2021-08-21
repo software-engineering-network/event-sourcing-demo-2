@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using EventSourcingDemo.CombatSpec;
 
 namespace EventSourcingDemo.Combat
 {
@@ -19,8 +20,17 @@ namespace EventSourcingDemo.Combat
         #region Public Interface
 
         public Attributes Attributes { get; private set; }
-        public IReadOnlyCollection<Event> Events => _events.AsReadOnly();
+        public IReadOnlyList<Event> Events => _events.AsReadOnly();
         public Guid Id { get; }
+
+        public Character Replay(params Event[] events)
+        {
+            foreach (var e in events)
+                if (e.Is(typeof(AttributesSet)))
+                    Handler(e as AttributesSet);
+
+            return this;
+        }
 
         public Character SetAttributes(Attributes attributes)
         {
