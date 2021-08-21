@@ -39,6 +39,25 @@ namespace EventSourcingDemo.Combat
         public ushort MagicDefense { get; }
         public ushort Speed { get; }
 
+        public void Deconstruct(
+            out Guid characterId,
+            out ushort attack,
+            out ushort defense,
+            out ushort hitPoints,
+            out ushort magicAttack,
+            out ushort magicDefense,
+            out ushort speed
+        )
+        {
+            characterId = CharacterId;
+            attack = Attack;
+            defense = Defense;
+            hitPoints = HitPoints;
+            magicAttack = MagicAttack;
+            magicDefense = MagicDefense;
+            speed = Speed;
+        }
+
         #endregion
     }
 }

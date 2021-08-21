@@ -12,8 +12,8 @@ namespace EventSourcingDemo.Combat
 
         public Character Find(Guid id) =>
             _streams.ContainsKey(id)
-                ? new Character().Replay(_streams[id])
-                : null;
+                ? new Character(id).Replay(_streams[id])
+                : new Character();
 
         public ICharacterRepository Save(Character character)
         {
