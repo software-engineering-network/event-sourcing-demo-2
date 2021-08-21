@@ -16,6 +16,17 @@ namespace EventSourcingDemo.CombatSpec
             character.Id.Should().NotBeEmpty();
         }
 
+        [Fact]
+        public void WhenModifyingAttributes()
+        {
+            var character = new Character();
+            var attributes = new Attributes(20, 0, 20, 10, 2, 20);
+
+            character.SetAttributes(attributes);
+
+            character.Attributes.Should().Be(attributes);
+        }
+
         #endregion
     }
 }
