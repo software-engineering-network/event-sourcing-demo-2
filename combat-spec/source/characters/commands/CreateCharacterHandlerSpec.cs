@@ -20,7 +20,7 @@ namespace EventSourcingDemo.CombatSpec
         #region Test Methods
 
         [Fact]
-        public void WhenCreatingCharacter()
+        public void WhenCreating()
         {
             var character = Character.Create("Mario");
 
