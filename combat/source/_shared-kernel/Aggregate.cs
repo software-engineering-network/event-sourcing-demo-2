@@ -9,7 +9,7 @@ namespace EventSourcingDemo.Combat
 
         #region Creation
 
-        protected Aggregate(Guid id) : base(id)
+        protected Aggregate(Guid id = default) : base(id)
         {
         }
 

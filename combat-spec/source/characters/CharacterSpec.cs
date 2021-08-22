@@ -12,7 +12,7 @@ namespace EventSourcingDemo.CombatSpec
 
         public CharacterSpec()
         {
-            _character = Character.Create("Mario");
+            _character = new Character("Mario");
         }
 
         #endregion

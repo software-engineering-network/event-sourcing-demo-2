@@ -7,10 +7,12 @@ namespace EventSourcingDemo.Combat
     {
         #region Creation
 
-        public Character(CharacterCreated e) : base(e.CharacterId)
+        public Character(string name)
         {
-            Handler(e);
-            Add(e);
+            var characterCreated = new CharacterCreated(Id, name);
+
+            Handler(characterCreated);
+            Add(characterCreated);
         }
 
         public Character(Guid id, params Event[] events) : base(id)
@@ -56,17 +58,6 @@ namespace EventSourcingDemo.Combat
         {
             Name = e.Name;
             return this;
-        }
-
-        #endregion
-
-        #region Static Interface
-
-        public static Character Create(string name)
-        {
-            var characterCreated = new CharacterCreated(Guid.NewGuid(), name);
-            var character = new Character(characterCreated);
-            return character;
         }
 
         #endregion

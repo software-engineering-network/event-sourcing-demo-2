@@ -22,7 +22,7 @@ namespace EventSourcingDemo.CombatSpec
         [Fact]
         public void WhenCreating()
         {
-            var character = Character.Create("Mario");
+            var character = new Character("Mario");
 
             var storedCharacter = _characterRepository
                 .Save(character)
