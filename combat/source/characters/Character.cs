@@ -1,23 +1,29 @@
 ﻿using System;
-using EventSourcingDemo.CombatSpec;
+using System.Collections.Generic;
 
 namespace EventSourcingDemo.Combat
 {
     public class Character : Aggregate
     {
+        private readonly EventProcessor _eventProcessor = new();
+
         #region Creation
 
-        public Character(string name)
+        public Character(string name) : this(Guid.Empty)
         {
-            var characterCreated = new CharacterCreated(Id, name);
-
-            Handler(characterCreated);
-            Add(characterCreated);
+            _eventProcessor.Add(new CharacterCreated(Id, name));
         }
 
-        public Character(Guid id, params Event[] events) : base(id)
+        public Character(Guid id, params IEvent[] events) : this(id)
         {
-            Replay(events);
+            _eventProcessor.Replay(events);
+        }
+
+        private Character(Guid id) : base(id)
+        {
+            _eventProcessor
+                .Register<CharacterCreated>(Handler)
+                .Register<AttributesSet>(Handler);
         }
 
         #endregion
@@ -25,22 +31,12 @@ namespace EventSourcingDemo.Combat
         #region Public Interface
 
         public Attributes Attributes { get; private set; }
+        public IReadOnlyCollection<IEvent> Events => _eventProcessor.Events;
         public string Name { get; private set; }
-
-        public Character Replay(params Event[] events)
-        {
-            foreach (var e in events)
-                if (e.Is(typeof(AttributesSet)))
-                    Handler(e as AttributesSet);
-
-            return this;
-        }
 
         public Character SetAttributes(Attributes attributes)
         {
-            var attributesSet = new AttributesSet(attributes, Id);
-            Handler(attributesSet);
-            Add(attributesSet);
+            _eventProcessor.Add(new AttributesSet(attributes, Id));
             return this;
         }
 
@@ -48,16 +44,14 @@ namespace EventSourcingDemo.Combat
 
         #region Private Interface
 
-        private Character Handler(AttributesSet e)
+        private void Handler(AttributesSet e)
         {
             Attributes = e.Attributes;
-            return this;
         }
 
-        private Character Handler(CharacterCreated e)
+        private void Handler(CharacterCreated e)
         {
             Name = e.Name;
-            return this;
         }
 
         #endregion

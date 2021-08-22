@@ -2,7 +2,7 @@
 
 namespace EventSourcingDemo.Combat
 {
-    public abstract class Event
+    public abstract class Event : IEvent
     {
         #region Creation
 

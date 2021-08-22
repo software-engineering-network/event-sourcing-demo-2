@@ -6,7 +6,7 @@ namespace EventSourcingDemo.Combat
 {
     public class CharacterRepository : ICharacterRepository
     {
-        private readonly Dictionary<Guid, Event[]> _streams = new();
+        private readonly Dictionary<Guid, List<IEvent>> _streams = new();
 
         #region ICharacterRepository Implementation
 
@@ -18,12 +18,16 @@ namespace EventSourcingDemo.Combat
                     nameof(id)
                 );
 
-            return new Character(id, _streams[id]);
+            return new Character(id, _streams[id].ToArray());
         }
 
         public ICharacterRepository Save(Character character)
         {
-            _streams[character.Id] = character.Events.ToArray();
+            if (_streams.ContainsKey(character.Id))
+                _streams[character.Id].AddRange(character.Events);
+            else
+                _streams.Add(character.Id, character.Events.ToList());
+
             return this;
         }
 
