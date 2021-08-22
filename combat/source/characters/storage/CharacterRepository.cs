@@ -10,10 +10,16 @@ namespace EventSourcingDemo.Combat
 
         #region ICharacterRepository Implementation
 
-        public Character Find(Guid id) =>
-            _streams.ContainsKey(id)
-                ? new Character(id).Replay(_streams[id])
-                : new Character();
+        public Character Find(Guid id)
+        {
+            if (!_streams.ContainsKey(id))
+                throw new ArgumentException(
+                    $"{nameof(Character)} not found.",
+                    nameof(id)
+                );
+
+            return new Character(_streams[id]);
+        }
 
         public ICharacterRepository Save(Character character)
         {

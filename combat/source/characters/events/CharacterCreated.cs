@@ -1,11 +1,14 @@
-﻿namespace EventSourcingDemo.Combat
+﻿using System;
+
+namespace EventSourcingDemo.Combat
 {
     public class CharacterCreated : Event
     {
         #region Creation
 
-        public CharacterCreated(string name)
+        public CharacterCreated(Guid characterId, string name)
         {
+            CharacterId = characterId;
             Name = name;
         }
 
@@ -13,6 +16,7 @@
 
         #region Public Interface
 
+        public Guid CharacterId { get; }
         public string Name { get; }
 
         #endregion

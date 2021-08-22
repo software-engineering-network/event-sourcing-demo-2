@@ -10,17 +10,20 @@ namespace EventSourcingDemo.Combat
 
         #region Creation
 
-        public Character(Guid id = default)
+        public Character(CharacterCreated e) : this(e.CharacterId)
         {
-            Id = id == default ? Guid.NewGuid() : id;
+            Handler(e);
+            _events.Add(e);
         }
 
-        public Character(CharacterCreated e)
+        public Character(params Event[] events)
         {
-            Id = Guid.NewGuid();
-            Name = e.Name;
+            Replay(events);
+        }
 
-            _events.Add(e);
+        protected Character(Guid id)
+        {
+            Id = id;
         }
 
         #endregion
@@ -30,7 +33,7 @@ namespace EventSourcingDemo.Combat
         public Attributes Attributes { get; private set; }
         public IReadOnlyList<Event> Events => _events.AsReadOnly();
         public Guid Id { get; }
-        public string Name { get; }
+        public string Name { get; private set; }
 
         public Character Replay(params Event[] events)
         {
@@ -65,11 +68,22 @@ namespace EventSourcingDemo.Combat
             return this;
         }
 
+        private Character Handler(CharacterCreated e)
+        {
+            Name = e.Name;
+            return this;
+        }
+
         #endregion
 
         #region Static Interface
 
-        public static Character Create(string name) => new(new CharacterCreated(name));
+        public static Character Create(string name)
+        {
+            var characterCreated = new CharacterCreated(Guid.NewGuid(), name);
+            var character = new Character(characterCreated);
+            return character;
+        }
 
         #endregion
     }
