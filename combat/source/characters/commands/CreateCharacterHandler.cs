@@ -17,7 +17,7 @@
 
         public Result Handle(CreateCharacter command)
         {
-            var character = Character.Create(command.Name);
+            var character = new Character(command.Name);
 
             _characterRepository.Save(character);
 

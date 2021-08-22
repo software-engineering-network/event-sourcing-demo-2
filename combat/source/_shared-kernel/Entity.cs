@@ -2,13 +2,13 @@
 
 namespace EventSourcingDemo.Combat
 {
-    public abstract class Event : IEvent
+    public abstract class Entity
     {
         #region Creation
 
-        protected Event()
+        protected Entity(Guid id = default)
         {
-            Id = Guid.NewGuid();
+            Id = id == default ? Guid.NewGuid() : id;
         }
 
         #endregion

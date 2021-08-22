@@ -14,7 +14,7 @@ namespace EventSourcingDemo.CombatSpec
         public SetAttributesHandlerSpec()
         {
             _characterRepository = new CharacterRepository();
-            _character = Character.Create("Mario");
+            _character = new Character("Mario");
             _characterRepository.Save(_character);
         }
 

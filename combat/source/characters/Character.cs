@@ -1,29 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using EventSourcingDemo.CombatSpec;
 
 namespace EventSourcingDemo.Combat
 {
-    public class Character
+    public class Character : Aggregate
     {
-        private readonly List<Event> _events = new();
+        private readonly EventProcessor _eventProcessor = new();
 
         #region Creation
 
-        public Character(CharacterCreated e) : this(e.CharacterId)
+        public Character(string name) : this(Guid.Empty)
         {
-            Handler(e);
-            _events.Add(e);
+            _eventProcessor.Add(new CharacterCreated(Id, name));
         }
 
-        public Character(Guid id, params Event[] events) : this(id)
+        public Character(Guid id, params IEvent[] events) : this(id)
         {
-            Replay(events);
+            _eventProcessor.Replay(events);
         }
 
-        protected Character(Guid id)
+        private Character(Guid id) : base(id)
         {
-            Id = id;
+            _eventProcessor
+                .Register<CharacterCreated>(Handler)
+                .Register<AttributesSet>(Handler);
         }
 
         #endregion
@@ -31,58 +31,27 @@ namespace EventSourcingDemo.Combat
         #region Public Interface
 
         public Attributes Attributes { get; private set; }
-        public IReadOnlyList<Event> Events => _events.AsReadOnly();
-        public Guid Id { get; }
+        public IReadOnlyCollection<IEvent> Events => _eventProcessor.Events;
         public string Name { get; private set; }
-
-        public Character Replay(params Event[] events)
-        {
-            foreach (var e in events)
-                if (e.Is(typeof(AttributesSet)))
-                    Handler(e as AttributesSet);
-
-            return this;
-        }
 
         public Character SetAttributes(Attributes attributes)
         {
-            var attributesSet = new AttributesSet(attributes, Id);
-
-            _events.Add(attributesSet);
-
-            /*
-             * This seems to be aesthetic-only.
-             * The final object won't be stored, only the event.
-             * So really, this is for testing purposes.
-             */
-            return Handler(attributesSet);
+            _eventProcessor.Add(new AttributesSet(attributes, Id));
+            return this;
         }
 
         #endregion
 
         #region Private Interface
 
-        private Character Handler(AttributesSet e)
+        private void Handler(AttributesSet e)
         {
             Attributes = e.Attributes;
-            return this;
         }
 
-        private Character Handler(CharacterCreated e)
+        private void Handler(CharacterCreated e)
         {
             Name = e.Name;
-            return this;
-        }
-
-        #endregion
-
-        #region Static Interface
-
-        public static Character Create(string name)
-        {
-            var characterCreated = new CharacterCreated(Guid.NewGuid(), name);
-            var character = new Character(characterCreated);
-            return character;
         }
 
         #endregion
