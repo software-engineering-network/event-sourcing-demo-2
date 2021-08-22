@@ -11,9 +11,11 @@ namespace EventSourcingDemo.CombatSpec
         [Fact]
         public void WhenCreatingCharacter()
         {
-            var character = new Character();
+            var character = Character.Create("Mario");
 
+            character.Events.Should().Contain(x => x.Is(typeof(CharacterCreated)));
             character.Id.Should().NotBeEmpty();
+            character.Name.Should().Be("Mario");
         }
 
         [Fact]
@@ -24,7 +26,7 @@ namespace EventSourcingDemo.CombatSpec
 
             character.SetAttributes(attributes);
 
-            character.Events.Should().Contain(x => x.Is(typeof(Character.AttributesSet)));
+            character.Events.Should().Contain(x => x.Is(typeof(AttributesSet)));
             character.Attributes.Should().Be(attributes);
         }
 
