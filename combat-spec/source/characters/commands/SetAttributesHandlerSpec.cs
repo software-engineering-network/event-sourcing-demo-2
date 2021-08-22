@@ -4,14 +4,14 @@ using Xunit;
 
 namespace EventSourcingDemo.CombatSpec
 {
-    public class SetAttributesSpec
+    public class SetAttributesHandlerSpec
     {
         #region Core
 
         private readonly Character _character;
         private readonly ICharacterRepository _characterRepository;
 
-        public SetAttributesSpec()
+        public SetAttributesHandlerSpec()
         {
             _characterRepository = new CharacterRepository();
             _character = Character.Create("Mario");

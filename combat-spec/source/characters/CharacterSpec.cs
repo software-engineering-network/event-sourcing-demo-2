@@ -20,7 +20,7 @@ namespace EventSourcingDemo.CombatSpec
         #region Test Methods
 
         [Fact]
-        public void WhenCreatingCharacter()
+        public void WhenCreating()
         {
             _character.Events.Should().Contain(x => x.Is(typeof(CharacterCreated)));
             _character.Id.Should().NotBeEmpty();
