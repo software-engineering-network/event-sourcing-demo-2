@@ -6,26 +6,36 @@ namespace EventSourcingDemo.CombatSpec
 {
     public class CharacterSpec
     {
+        #region Core
+
+        private readonly Character _character;
+
+        public CharacterSpec()
+        {
+            _character = Character.Create("Mario");
+        }
+
+        #endregion
+
         #region Test Methods
 
         [Fact]
         public void WhenCreatingCharacter()
         {
-            var character = new Character();
-
-            character.Id.Should().NotBeEmpty();
+            _character.Events.Should().Contain(x => x.Is(typeof(CharacterCreated)));
+            _character.Id.Should().NotBeEmpty();
+            _character.Name.Should().Be("Mario");
         }
 
         [Fact]
         public void WhenSettingAttributes()
         {
-            var character = new Character();
             var attributes = new Attributes(20, 0, 20, 10, 2, 20);
 
-            character.SetAttributes(attributes);
+            _character.SetAttributes(attributes);
 
-            character.Events.Should().Contain(x => x.Is(typeof(Character.AttributesSet)));
-            character.Attributes.Should().Be(attributes);
+            _character.Events.Should().Contain(x => x.Is(typeof(AttributesSet)));
+            _character.Attributes.Should().Be(attributes);
         }
 
         #endregion

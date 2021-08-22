@@ -2,11 +2,11 @@
 
 namespace EventSourcingDemo.Combat
 {
-    public class Event
+    public abstract class Event
     {
         #region Creation
 
-        public Event()
+        protected Event()
         {
             Id = Guid.NewGuid();
         }

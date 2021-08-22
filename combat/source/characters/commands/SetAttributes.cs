@@ -25,7 +25,7 @@ namespace EventSourcingDemo.Combat
 
         #region Public Interface
 
-        public Attributes Attributes { get; set; }
+        public Attributes Attributes { get; }
         public Guid CharacterId { get; }
         public Guid Id { get; }
 

@@ -6,17 +6,27 @@ namespace EventSourcingDemo.CombatSpec
 {
     public class SetAttributesSpec
     {
+        #region Core
+
+        private readonly Character _character;
+        private readonly ICharacterRepository _characterRepository;
+
+        public SetAttributesSpec()
+        {
+            _characterRepository = new CharacterRepository();
+            _character = Character.Create("Mario");
+            _characterRepository.Save(_character);
+        }
+
+        #endregion
+
         #region Test Methods
 
         [Fact]
         public void WhenSettingAttributes()
         {
-            var characterRepository = new CharacterRepository();
-            var character = new Character();
-            characterRepository.Save(character);
-
-            var command = new SetAttributes(character.Id, 20, 0, 20, 10, 2, 20);
-            var handler = new SetAttributesHandler(characterRepository);
+            var command = new SetAttributes(_character.Id, 20, 0, 20, 10, 2, 20);
+            var handler = new SetAttributesHandler(_characterRepository);
 
             var result = handler.Handle(command);
 
