@@ -18,7 +18,7 @@ namespace EventSourcingDemo.Combat
                     nameof(id)
                 );
 
-            return new Character(_streams[id]);
+            return new Character(id, _streams[id]);
         }
 
         public ICharacterRepository Save(Character character)

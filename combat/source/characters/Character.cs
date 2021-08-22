@@ -16,7 +16,7 @@ namespace EventSourcingDemo.Combat
             _events.Add(e);
         }
 
-        public Character(params Event[] events)
+        public Character(Guid id, params Event[] events) : this(id)
         {
             Replay(events);
         }
