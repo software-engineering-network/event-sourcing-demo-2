@@ -26,7 +26,7 @@ namespace EventSourcingDemo.CombatSpec
         public void WhenSettingAttributes()
         {
             var command = new SetAttributes(_character.Id, 20, 0, 20, 10, 2, 20);
-            var handler = new SetAttributesHandler(_characterRepository);
+            var handler = new SetAttributes.Handler(_characterRepository);
 
             var result = handler.Handle(command);
 
