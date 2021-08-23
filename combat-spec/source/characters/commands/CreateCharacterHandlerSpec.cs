@@ -22,9 +22,10 @@ namespace EventSourcingDemo.CombatSpec
         [Fact]
         public void WhenCreating()
         {
+            var command = new CreateCharacter("Mario");
             var handler = new CreateCharacter.Handler(_characterRepository);
 
-            var result = handler.Handle(new CreateCharacter("Mario"));
+            var result = handler.Handle(command);
 
             result.Status.Should().Be(Status.Succeeded);
         }
