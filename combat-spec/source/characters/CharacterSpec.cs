@@ -28,6 +28,17 @@ namespace EventSourcingDemo.CombatSpec
         }
 
         [Fact]
+        public void WhenModifyingAttributes()
+        {
+            _character.SetAttributes(new Attributes(20, 0, 20, 10, 2, 20));
+
+            _character.ModifyAttributes(new Attributes(2, 0, 0, 0, 0, 0));
+
+            _character.Events.Should().Contain(x => x.Is(typeof(AttributesModified)));
+            _character.Attributes.Should().BeEquivalentTo(new Attributes(22, 0, 20, 10, 2, 20));
+        }
+
+        [Fact]
         public void WhenSettingAttributes()
         {
             var attributes = new Attributes(20, 0, 20, 10, 2, 20);

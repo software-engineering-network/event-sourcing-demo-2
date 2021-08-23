@@ -36,5 +36,19 @@ namespace EventSourcingDemo.Combat
         public ushort Speed { get; }
 
         #endregion
+
+        #region Static Interface
+
+        public static Attributes operator +(Attributes left, Attributes right) =>
+            new(
+                (ushort) (left.Attack + right.Attack),
+                (ushort) (left.Defense + right.Defense),
+                (ushort) (left.HitPoints + right.HitPoints),
+                (ushort) (left.MagicAttack + right.MagicAttack),
+                (ushort) (left.MagicDefense + right.MagicDefense),
+                (ushort) (left.Speed + right.Speed)
+            );
+
+        #endregion
     }
 }

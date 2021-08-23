@@ -23,7 +23,8 @@ namespace EventSourcingDemo.Combat
         {
             _eventProcessor
                 .Register<CharacterCreated>(Handler)
-                .Register<AttributesSet>(Handler);
+                .Register<AttributesSet>(Handler)
+                .Register<AttributesModified>(Handler);
         }
 
         #endregion
@@ -34,6 +35,12 @@ namespace EventSourcingDemo.Combat
         public IReadOnlyCollection<IEvent> Events => _eventProcessor.Events;
         public string Name { get; private set; }
 
+        public Character ModifyAttributes(Attributes attributes)
+        {
+            _eventProcessor.Add(new AttributesModified(attributes, Id));
+            return this;
+        }
+
         public Character SetAttributes(Attributes attributes)
         {
             _eventProcessor.Add(new AttributesSet(attributes, Id));
@@ -43,6 +50,11 @@ namespace EventSourcingDemo.Combat
         #endregion
 
         #region Private Interface
+
+        private void Handler(AttributesModified e)
+        {
+            Attributes += e.Attributes;
+        }
 
         private void Handler(AttributesSet e)
         {
