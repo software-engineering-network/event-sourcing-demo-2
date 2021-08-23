@@ -1,7 +1,6 @@
 using EventSourcingDemo.Combat;
 using FluentAssertions;
 using Xunit;
-using static EventSourcingDemo.Combat.Attributes;
 
 namespace EventSourcingDemo.CombatSpec
 {
@@ -20,13 +19,27 @@ namespace EventSourcingDemo.CombatSpec
 
         #region Test Methods
 
-        [Fact]
-        public void WhenCreating()
+        [Theory]
+        [InlineData("Mario")]
+        [InlineData("Mario", 20, 0, 20, 10, 2, 20)]
+        public void WhenCreating(
+            string name,
+            ushort attack = default,
+            ushort defense = default,
+            ushort hitPoints = default,
+            ushort magicAttack = default,
+            ushort magicDefense = default,
+            ushort speed = default
+        )
         {
-            _character.Events.Should().Contain(x => x.Is(typeof(CharacterCreated)));
-            _character.Id.Should().NotBeEmpty();
-            _character.Name.Should().Be("Mario");
-            _character.Attributes.Should().BeEquivalentTo(Default);
+            var attributes = new Attributes(attack, defense, hitPoints, magicAttack, magicDefense, speed);
+
+            var character = new Character(name, attributes);
+
+            character.Events.Should().Contain(x => x.Is(typeof(CharacterCreated)));
+            character.Id.Should().NotBeEmpty();
+            character.Name.Should().Be("Mario");
+            character.Attributes.Should().BeEquivalentTo(attributes);
         }
 
         [Fact]

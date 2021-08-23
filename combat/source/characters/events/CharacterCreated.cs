@@ -6,8 +6,13 @@ namespace EventSourcingDemo.Combat
     {
         #region Creation
 
-        public CharacterCreated(Guid characterId, string name)
+        public CharacterCreated(
+            Attributes attributes,
+            Guid characterId,
+            string name
+        )
         {
+            Attributes = attributes;
             CharacterId = characterId;
             Name = name;
         }
@@ -16,6 +21,7 @@ namespace EventSourcingDemo.Combat
 
         #region Public Interface
 
+        public Attributes Attributes { get; }
         public Guid CharacterId { get; }
         public string Name { get; }
 
