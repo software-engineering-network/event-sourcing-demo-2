@@ -22,13 +22,12 @@ namespace EventSourcingDemo.CombatSpec
         [Fact]
         public void WhenCreating()
         {
-            var character = new Character("Mario");
+            var command = new CreateCharacter("Mario");
+            var handler = new CreateCharacter.Handler(_characterRepository);
 
-            var storedCharacter = _characterRepository
-                .Create(character)
-                .Find(character.Id);
+            var result = handler.Handle(command);
 
-            storedCharacter.Id.Should().Be(character.Id);
+            result.Status.Should().Be(Status.Succeeded);
         }
 
         #endregion
