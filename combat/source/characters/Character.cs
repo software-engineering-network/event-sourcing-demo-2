@@ -10,9 +10,18 @@ namespace EventSourcingDemo.Combat
 
         #region Creation
 
-        public Character(string name) : this(Guid.Empty)
+        public Character(
+            string name,
+            Attributes attributes = default
+        ) : this(Guid.Empty)
         {
-            _eventProcessor.Add(new CharacterCreated(Id, name));
+            _eventProcessor.Add(
+                new CharacterCreated(
+                    attributes ?? Default,
+                    Id,
+                    name
+                )
+            );
         }
 
         public Character(Guid id, params IEvent[] events) : this(id)
@@ -65,7 +74,7 @@ namespace EventSourcingDemo.Combat
         private void Handler(CharacterCreated e)
         {
             Name = e.Name;
-            Attributes = Default;
+            Attributes = e.Attributes;
         }
 
         #endregion
