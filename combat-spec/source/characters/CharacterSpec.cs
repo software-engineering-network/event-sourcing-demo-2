@@ -1,6 +1,7 @@
 using EventSourcingDemo.Combat;
 using FluentAssertions;
 using Xunit;
+using static EventSourcingDemo.Combat.Attributes;
 
 namespace EventSourcingDemo.CombatSpec
 {
@@ -25,17 +26,18 @@ namespace EventSourcingDemo.CombatSpec
             _character.Events.Should().Contain(x => x.Is(typeof(CharacterCreated)));
             _character.Id.Should().NotBeEmpty();
             _character.Name.Should().Be("Mario");
+            _character.Attributes.Should().BeEquivalentTo(Default);
         }
 
         [Fact]
         public void WhenModifyingAttributes()
         {
-            _character.SetAttributes(new Attributes(20, 0, 20, 10, 2, 20));
-
-            _character.ModifyAttributes(new Attributes(2, 0, 0, 0, 0, 0));
+            _character
+                .ModifyAttributes(new(1, 1, 1, 1, 1, 1))
+                .ModifyAttributes(new(2, 2, 2, 2, 2, 2));
 
             _character.Events.Should().Contain(x => x.Is(typeof(AttributesModified)));
-            _character.Attributes.Should().BeEquivalentTo(new Attributes(22, 0, 20, 10, 2, 20));
+            _character.Attributes.Should().BeEquivalentTo(new Attributes(3, 3, 3, 3, 3, 3));
         }
 
         [Fact]

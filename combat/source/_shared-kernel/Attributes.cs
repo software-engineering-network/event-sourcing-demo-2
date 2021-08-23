@@ -5,6 +5,8 @@ namespace EventSourcingDemo.Combat
     [DebuggerDisplay("A:{Attack} D:{Defense} HP:{HitPoints} MA:{MagicAttack} MD:{MagicDefense} S:{Speed}")]
     public class Attributes
     {
+        public static readonly Attributes Default = new(0, 0, 0, 0, 0, 0);
+
         #region Creation
 
         public Attributes(

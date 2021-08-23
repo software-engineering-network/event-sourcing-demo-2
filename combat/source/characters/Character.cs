@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using static EventSourcingDemo.Combat.Attributes;
 
 namespace EventSourcingDemo.Combat
 {
@@ -64,6 +65,7 @@ namespace EventSourcingDemo.Combat
         private void Handler(CharacterCreated e)
         {
             Name = e.Name;
+            Attributes = Default;
         }
 
         #endregion
