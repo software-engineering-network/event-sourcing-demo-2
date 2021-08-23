@@ -25,7 +25,7 @@ namespace EventSourcingDemo.CombatSpec
             var character = new Character("Mario");
 
             var storedCharacter = _characterRepository
-                .Save(character)
+                .Create(character)
                 .Find(character.Id);
 
             storedCharacter.Id.Should().Be(character.Id);

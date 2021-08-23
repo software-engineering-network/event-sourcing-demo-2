@@ -19,7 +19,7 @@
         {
             var character = new Character(command.Name);
 
-            _characterRepository.Save(character);
+            _characterRepository.Create(character);
 
             return new Result(Status.Succeeded);
         }

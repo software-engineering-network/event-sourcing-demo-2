@@ -15,7 +15,7 @@ namespace EventSourcingDemo.CombatSpec
         {
             _characterRepository = new CharacterRepository();
             _character = new Character("Mario");
-            _characterRepository.Save(_character);
+            _characterRepository.Create(_character);
         }
 
         #endregion

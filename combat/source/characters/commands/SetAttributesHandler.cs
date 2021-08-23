@@ -22,7 +22,7 @@
             character.SetAttributes(command.Attributes);
 
             var updatedCharacter = _characterRepository
-                .Save(character)
+                .Update(character)
                 .Find(character.Id);
 
             return new(Status.Succeeded);

@@ -4,7 +4,8 @@ namespace EventSourcingDemo.Combat
 {
     public interface ICharacterRepository
     {
+        ICharacterRepository Create(Character character);
         Character Find(Guid id);
-        ICharacterRepository Save(Character character);
+        ICharacterRepository Update(Character character);
     }
 }
