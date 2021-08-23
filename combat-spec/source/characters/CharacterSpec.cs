@@ -32,7 +32,14 @@ namespace EventSourcingDemo.CombatSpec
             ushort speed = default
         )
         {
-            var attributes = new Attributes(attack, defense, hitPoints, magicAttack, magicDefense, speed);
+            var attributes = new Attributes(
+                attack,
+                defense,
+                hitPoints,
+                magicAttack,
+                magicDefense,
+                speed
+            );
 
             var character = new Character(name, attributes);
 
