@@ -15,9 +15,8 @@ namespace EventSourcingDemo.Combat
             Attributes attributes = default
         ) : this(Guid.Empty)
         {
-            _eventProcessor
-                .Add(new Renamed(name))
-                .Add(new AttributesSet(attributes ?? Default, Id));
+            Rename(name);
+            SetAttributes(attributes ?? Default);
         }
 
         public Character(Guid id, params IEvent[] events) : this(id)
