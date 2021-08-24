@@ -61,6 +61,15 @@ namespace EventSourcingDemo.CombatSpec
         }
 
         [Fact]
+        public void WhenRenaming()
+        {
+            _character.Rename("Maria");
+
+            _character.Events.Should().Contain(x => x.Is(typeof(Renamed)));
+            _character.Name.Should().Be("Maria");
+        }
+
+        [Fact]
         public void WhenSettingAttributes()
         {
             var attributes = new Attributes(20, 0, 20, 10, 2, 20);

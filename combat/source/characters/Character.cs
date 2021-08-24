@@ -34,7 +34,8 @@ namespace EventSourcingDemo.Combat
             _eventProcessor
                 .Register<CharacterCreated>(Handler)
                 .Register<AttributesSet>(Handler)
-                .Register<AttributesModified>(Handler);
+                .Register<AttributesModified>(Handler)
+                .Register<Renamed>(Handler);
         }
 
         #endregion
@@ -48,6 +49,12 @@ namespace EventSourcingDemo.Combat
         public Character ModifyAttributes(Attributes attributes)
         {
             _eventProcessor.Add(new AttributesModified(attributes, Id));
+            return this;
+        }
+
+        public Character Rename(string name)
+        {
+            _eventProcessor.Add(new Renamed(name));
             return this;
         }
 
@@ -75,6 +82,11 @@ namespace EventSourcingDemo.Combat
         {
             Name = e.Name;
             Attributes = e.Attributes;
+        }
+
+        private void Handler(Renamed e)
+        {
+            Name = e.Name;
         }
 
         #endregion
