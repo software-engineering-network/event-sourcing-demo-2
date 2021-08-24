@@ -54,7 +54,7 @@ namespace EventSourcingDemo.Combat
 
                 _characterRepository.Update(character);
 
-                return new(Status.Succeeded);
+                return new(character.Id, Status.Succeeded);
             }
 
             #endregion

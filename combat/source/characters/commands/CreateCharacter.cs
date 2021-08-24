@@ -34,9 +34,11 @@
 
             public Result Handle(CreateCharacter command)
             {
-                _characterRepository.Create(new Character(command.Name));
+                var character = new Character(command.Name);
 
-                return new Result(Status.Succeeded);
+                _characterRepository.Create(character);
+
+                return new Result(character.Id, Status.Succeeded);
             }
 
             #endregion
