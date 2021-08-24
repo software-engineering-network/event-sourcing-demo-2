@@ -43,7 +43,6 @@ namespace EventSourcingDemo.CombatSpec
 
             var character = new Character(name, attributes);
 
-            character.Events.Should().Contain(x => x.Is(typeof(CharacterCreated)));
             character.Id.Should().NotBeEmpty();
             character.Name.Should().Be("Mario");
             character.Attributes.Should().BeEquivalentTo(attributes);

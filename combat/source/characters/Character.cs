@@ -15,13 +15,9 @@ namespace EventSourcingDemo.Combat
             Attributes attributes = default
         ) : this(Guid.Empty)
         {
-            _eventProcessor.Add(
-                new CharacterCreated(
-                    attributes ?? Default,
-                    Id,
-                    name
-                )
-            );
+            _eventProcessor
+                .Add(new Renamed(name))
+                .Add(new AttributesSet(attributes ?? Default, Id));
         }
 
         public Character(Guid id, params IEvent[] events) : this(id)
@@ -32,7 +28,6 @@ namespace EventSourcingDemo.Combat
         private Character(Guid id) : base(id)
         {
             _eventProcessor
-                .Register<CharacterCreated>(Handler)
                 .Register<AttributesSet>(Handler)
                 .Register<AttributesModified>(Handler)
                 .Register<Renamed>(Handler);
@@ -75,12 +70,6 @@ namespace EventSourcingDemo.Combat
 
         private void Handler(AttributesSet e)
         {
-            Attributes = e.Attributes;
-        }
-
-        private void Handler(CharacterCreated e)
-        {
-            Name = e.Name;
             Attributes = e.Attributes;
         }
 
