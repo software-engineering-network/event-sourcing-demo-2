@@ -29,6 +29,7 @@ namespace EventSourcingDemo.CombatSpec
             var handler = new SetAttributes.Handler(_characterRepository);
 
             var result = handler.Handle(command);
+            var result2 = handler.Handle(command);
 
             result.Status.Should().Be(Status.Succeeded);
         }
