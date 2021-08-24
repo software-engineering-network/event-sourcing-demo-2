@@ -48,15 +48,13 @@ namespace EventSourcingDemo.Combat
 
             public Result Handle(SetAttributes command)
             {
-                var character = _characterRepository.Find(command.CharacterId);
+                var character = _characterRepository
+                    .Find(command.CharacterId)
+                    .SetAttributes(command.Attributes);
 
-                character.SetAttributes(command.Attributes);
+                _characterRepository.Update(character);
 
-                var updatedCharacter = _characterRepository
-                    .Update(character)
-                    .Find(character.Id);
-
-                return new(Status.Succeeded);
+                return new(character.Id, Status.Succeeded);
             }
 
             #endregion

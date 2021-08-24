@@ -12,10 +12,12 @@ namespace EventSourcingDemo.Combat
 
         public IReadOnlyCollection<IEvent> Events => _events.AsReadOnly();
 
-        public void Add(IEvent e)
+        public EventProcessor Add(IEvent e)
         {
             _handlers[e.GetType()].Invoke(e);
             _events.Add(e);
+
+            return this;
         }
 
         public EventProcessor Register<T>(Action<T> handler) where T : IEvent
@@ -24,10 +26,12 @@ namespace EventSourcingDemo.Combat
             return this;
         }
 
-        public void Replay(params IEvent[] events)
+        public EventProcessor Replay(params IEvent[] events)
         {
             foreach (var e in events)
                 _handlers[e.GetType()].Invoke(e);
+
+            return this;
         }
 
         #endregion

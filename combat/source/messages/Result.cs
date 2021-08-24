@@ -1,11 +1,14 @@
-﻿namespace EventSourcingDemo.Combat
+﻿using System;
+
+namespace EventSourcingDemo.Combat
 {
     public class Result
     {
         #region Creation
 
-        public Result(Status status)
+        public Result(Guid id, Status status)
         {
+            Id = id;
             Status = status;
         }
 
@@ -13,6 +16,7 @@
 
         #region Public Interface
 
+        public Guid Id { get; }
         public Status Status { get; }
 
         #endregion

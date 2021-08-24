@@ -1,6 +1,7 @@
 using EventSourcingDemo.Combat;
 using FluentAssertions;
 using Xunit;
+using static EventSourcingDemo.Combat.CreateCharacter;
 
 namespace EventSourcingDemo.CombatSpec
 {
@@ -9,10 +10,12 @@ namespace EventSourcingDemo.CombatSpec
         #region Core
 
         private readonly ICharacterRepository _characterRepository;
+        private readonly Handler _handler;
 
         public CreateCharacterHandlerSpec()
         {
             _characterRepository = new CharacterRepository();
+            _handler = new Handler(_characterRepository);
         }
 
         #endregion
@@ -22,12 +25,12 @@ namespace EventSourcingDemo.CombatSpec
         [Fact]
         public void WhenCreating()
         {
-            var command = new CreateCharacter("Mario");
-            var handler = new CreateCharacter.Handler(_characterRepository);
+            var result = _handler.Handle(new CreateCharacter("Mario"));
 
-            var result = handler.Handle(command);
+            var character = _characterRepository.Find(result.Id);
 
             result.Status.Should().Be(Status.Succeeded);
+            character.Should().NotBeNull();
         }
 
         #endregion

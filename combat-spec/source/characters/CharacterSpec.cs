@@ -43,7 +43,6 @@ namespace EventSourcingDemo.CombatSpec
 
             var character = new Character(name, attributes);
 
-            character.Events.Should().Contain(x => x.Is(typeof(CharacterCreated)));
             character.Id.Should().NotBeEmpty();
             character.Name.Should().Be("Mario");
             character.Attributes.Should().BeEquivalentTo(attributes);
@@ -58,6 +57,15 @@ namespace EventSourcingDemo.CombatSpec
 
             _character.Events.Should().Contain(x => x.Is(typeof(AttributesModified)));
             _character.Attributes.Should().BeEquivalentTo(new Attributes(3, 3, 3, 3, 3, 3));
+        }
+
+        [Fact]
+        public void WhenRenaming()
+        {
+            _character.Rename("Maria");
+
+            _character.Events.Should().Contain(x => x.Is(typeof(Renamed)));
+            _character.Name.Should().Be("Maria");
         }
 
         [Fact]
