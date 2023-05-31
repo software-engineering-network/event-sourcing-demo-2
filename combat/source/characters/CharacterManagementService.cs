@@ -19,12 +19,6 @@ namespace EventSourcingDemo.Combat
 
         #endregion
 
-        #region Private Interface
-
-        private Character Find(string streamId) => ;
-
-        #endregion
-
         #region ICommandHandler<CreateCharacter> Implementation
 
         public Result Handle(CreateCharacter command)
