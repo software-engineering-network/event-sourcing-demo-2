@@ -1,81 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using static EventSourcingDemo.Combat.Attributes;
-
-namespace EventSourcingDemo.Combat
+﻿namespace EventSourcingDemo.Combat
 {
-    public class Character : Aggregate
+    public partial class Character : Aggregate
     {
-        private readonly EventProcessor _eventProcessor = new();
-
         #region Creation
 
-        public Character(
-            string name,
-            Attributes attributes = default
-        ) : this(Guid.Empty)
+        private Character(CharacterCreated source) : base(source.CharacterId)
         {
-            Rename(name);
-            SetAttributes(attributes ?? Default);
+            Attributes = source.Attributes;
+            Name = source.Name;
         }
 
-        public Character(Guid id, params IEvent[] events) : this(id)
+        private Character(Character source) : base(source.Id)
         {
-            _eventProcessor.Replay(events);
+            var (attributes, name) = source;
+
+            Attributes = attributes;
+            Name = name;
         }
 
-        private Character(Guid id) : base(id)
+        private Character(Character source, Attributes attributes) : this(source)
         {
-            _eventProcessor
-                .Register<AttributesSet>(Handler)
-                .Register<AttributesModified>(Handler)
-                .Register<Renamed>(Handler);
+            Attributes = attributes;
+        }
+
+        public static Character From(params IEvent[] events)
+        {
+            var enumerator = events.GetEnumerator();
+
+            var character = new Character((CharacterCreated)enumerator.Current);
+
+            while (enumerator.MoveNext())
+                character = character.Apply(enumerator.Current);
+
+            return character;
         }
 
         #endregion
 
         #region Public Interface
 
-        public Attributes Attributes { get; private set; }
-        public IReadOnlyCollection<IEvent> Events => _eventProcessor.Events;
-        public string Name { get; private set; }
+        public Attributes Attributes { get; }
+        public string Name { get; }
 
-        public Character ModifyAttributes(Attributes attributes)
+        /// <summary>
+        ///     Reducer. Takes the current <see cref="Character" /> instance and applies the supplied
+        ///     <see cref="AttributesModified" /> event.
+        /// </summary>
+        /// <param name="event"></param>
+        /// <returns>A new <see cref="Character" /> with the <see cref="AttributesModified" /> event applied.</returns>
+        public Result<Character> Apply(AttributesModified @event) => new Character(this, @event.Attributes);
+
+        public void Deconstruct(out Attributes attributes, out string name)
         {
-            _eventProcessor.Add(new AttributesModified(attributes, Id));
-            return this;
+            attributes = Attributes;
+            name = Name;
         }
 
-        public Character Rename(string name)
-        {
-            _eventProcessor.Add(new Renamed(name));
-            return this;
-        }
-
-        public Character SetAttributes(Attributes attributes)
-        {
-            _eventProcessor.Add(new AttributesSet(attributes, Id));
-            return this;
-        }
-
-        #endregion
-
-        #region Private Interface
-
-        private void Handler(AttributesModified e)
-        {
-            Attributes += e.Attributes;
-        }
-
-        private void Handler(AttributesSet e)
-        {
-            Attributes = e.Attributes;
-        }
-
-        private void Handler(Renamed e)
-        {
-            Name = e.Name;
-        }
+        /// <summary>Replaces a <see cref="Character" />'s <see cref="Attributes" />.</summary>
+        /// <remarks>
+        ///     <para>Does the business logic. Can fail. Can make external calls. Can do whatever.</para>
+        ///     <para>
+        ///         This way, we can write unit tests against <see cref="Character" /> to guarantee it produces a particular
+        ///         result.
+        ///     </para>
+        /// </remarks>
+        /// <param name="attributes"></param>
+        /// <returns>Either an <see cref="AttributesSet" /> event or an error.</returns>
+        public Result<AttributesSet> Set(Attributes attributes) => new AttributesSet(attributes, Id);
 
         #endregion
     }
