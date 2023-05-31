@@ -23,7 +23,7 @@
             Attributes = attributes;
         }
 
-        public static Character From(params IEvent[] events)
+        public static Result<Character> From(params IEvent[] events)
         {
             var enumerator = events.GetEnumerator();
 

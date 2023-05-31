@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace EventSourcingDemo.Combat
+﻿namespace EventSourcingDemo.Combat
 {
     public interface IEventStore
     {
-        IEvent[] GetStream(Guid streamId);
-        Result Push(Guid streamId, IEvent @event);
+        Result<IEvent[]> GetStream(string streamId);
+        Result Push(string streamId, IEvent @event);
     }
 }

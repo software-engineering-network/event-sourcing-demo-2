@@ -45,6 +45,7 @@ namespace EventSourcingDemo.Combat
 
         public T Value { get; }
         public Result Bind(Func<T, Result> next) => WasFailure ? this : next(Value);
+        public Result<T2> Bind<T2>(Func<T, Result<T2>> next) => WasFailure ? this : next(Value);
 
         #endregion
 
@@ -52,8 +53,8 @@ namespace EventSourcingDemo.Combat
 
         public static implicit operator Result<T>(T value) => new(value);
 
-        #endregion
+        public static implicit operator T(Result<T> source) => source.Value;
 
-        //public static implicit operator T(Result<T> source) => source.Value;
+        #endregion
     }
 }

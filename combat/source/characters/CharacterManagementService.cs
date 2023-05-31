@@ -19,12 +19,18 @@ namespace EventSourcingDemo.Combat
 
         #endregion
 
+        #region Private Interface
+
+        private Character Find(string streamId) => ;
+
+        #endregion
+
         #region ICommandHandler<CreateCharacter> Implementation
 
         public Result Handle(CreateCharacter command)
         {
             /*
-             * check component stream for existing characters;
+             * check category stream for existing characters;
              * a character in this application, is a character definition
              * as opposed to an instance of a character;
              */
@@ -39,10 +45,16 @@ namespace EventSourcingDemo.Combat
 
         #region ICommandHandler<SetAttributes> Implementation
 
-        public Result Handle(SetAttributes command) =>
-            From(_store.GetStream(command.CharacterId))
-                .Set(command.Attributes)
-                .Bind(attributesSet => _store.Push(command.CharacterId, attributesSet));
+        public Result Handle(SetAttributes command)
+        {
+            var (id, characterId, attributes) = command;
+            var entityStreamId = $"character-{characterId}";
+
+            return _store.GetStream(entityStreamId)
+                .Bind(stream => From(stream))
+                .Bind(character => character.Set(attributes))
+                .Bind(attributesSetEvent => _store.Push(entityStreamId, attributesSetEvent));
+        }
 
         #endregion
     }
