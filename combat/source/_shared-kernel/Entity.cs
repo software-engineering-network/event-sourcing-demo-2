@@ -6,9 +6,9 @@ namespace EventSourcingDemo.Combat
     {
         #region Creation
 
-        protected Entity(Guid id = default)
+        protected Entity(Guid id)
         {
-            Id = id == default ? Guid.NewGuid() : id;
+            Id = id;
         }
 
         #endregion

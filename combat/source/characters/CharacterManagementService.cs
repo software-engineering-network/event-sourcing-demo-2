@@ -1,13 +1,13 @@
-﻿using System;
-using static EventSourcingDemo.Combat.Character;
-using static EventSourcingDemo.Combat.Result;
+﻿using static EventSourcingDemo.Combat.Character;
+using static EventSourcingDemo.Combat.Command;
 
 namespace EventSourcingDemo.Combat
 {
     public class CharacterManagementService :
-        ICommandHandler<CreateCharacter>,
-        ICommandHandler<SetAttributes>
+        IHandler<CreateCharacter>,
+        IHandler<SetAttributes>
     {
+        public const string Category = "CharacterManagement";
         private readonly IEventStore _store;
 
         #region Creation
@@ -19,35 +19,36 @@ namespace EventSourcingDemo.Combat
 
         #endregion
 
-        #region ICommandHandler<CreateCharacter> Implementation
+        #region IHandler<CreateCharacter> Implementation
 
         public Result Handle(CreateCharacter command)
         {
-            /*
-             * check category stream for existing characters;
-             * a character in this application, is a character definition
-             * as opposed to an instance of a character;
-             */
-            var @event = new CharacterCreated(Attributes.Default, Guid.NewGuid(), command.Name);
+            var result = _store.Find(new(Category));
 
-            _store.Push(@event.CharacterId, @event);
+            if (result.WasSuccessful)
+                return CannotDuplicateCharacter();
 
-            return Success();
+            return _store.Push(
+                new CharacterCreated(
+                    new(Category, command.EntityId),
+                    command.Name,
+                    Attributes.Default
+                )
+            );
         }
 
         #endregion
 
-        #region ICommandHandler<SetAttributes> Implementation
+        #region IHandler<SetAttributes> Implementation
 
         public Result Handle(SetAttributes command)
         {
-            var (id, characterId, attributes) = command;
-            var entityStreamId = $"character-{characterId}";
+            var (entityStreamId, attributes) = command;
 
-            return _store.GetStream(entityStreamId)
+            return _store.Find(entityStreamId)
                 .Bind(stream => From(stream))
                 .Bind(character => character.Set(attributes))
-                .Bind(attributesSetEvent => _store.Push(entityStreamId, attributesSetEvent));
+                .Bind(attributesSet => _store.Push(attributesSet));
         }
 
         #endregion

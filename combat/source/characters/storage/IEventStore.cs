@@ -1,8 +1,16 @@
-﻿namespace EventSourcingDemo.Combat
+﻿using System;
+
+namespace EventSourcingDemo.Combat
 {
     public interface IEventStore
     {
-        Result<IEvent[]> GetStream(string streamId);
-        Result Push(string streamId, IEvent @event);
+        Result<Event[]> Find(StreamId streamId);
+        Result Push(Event @event);
     }
+
+    public record StreamId(
+        string Category,
+        Guid EntityId = default,
+        bool IsCommand = false
+    );
 }

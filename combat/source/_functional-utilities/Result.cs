@@ -6,26 +6,25 @@ namespace EventSourcingDemo.Combat
     {
         #region Creation
 
-        public Result(string message = default)
+        public Result(Error error = default)
         {
-            Message = message;
-            WasFailure = message == string.Empty;
+            Error = error;
         }
 
         #endregion
 
         #region Public Interface
 
-        public string Message { get; }
-        public bool WasFailure { get; }
-        public bool WasSuccessful => !WasFailure;
+        public Error Error { get; }
+        public bool WasFailure => !WasSuccessful;
+        public bool WasSuccessful => Error is null;
 
         #endregion
 
         #region Static Interface
 
-        public static Result Failure() => new("failure");
         public static Result Success() => new();
+        public static implicit operator Result(Error error) => new(error);
 
         #endregion
     }
@@ -39,20 +38,24 @@ namespace EventSourcingDemo.Combat
             Value = value;
         }
 
+        private Result(Error error) : base(error)
+        {
+        }
+
         #endregion
 
         #region Public Interface
 
         public T Value { get; }
         public Result Bind(Func<T, Result> next) => WasFailure ? this : next(Value);
-        public Result<T2> Bind<T2>(Func<T, Result<T2>> next) => WasFailure ? this : next(Value);
+        public Result<T2> Bind<T2>(Func<T, Result<T2>> next) => WasFailure ? Error : next(Value);
 
         #endregion
 
         #region Static Interface
 
         public static implicit operator Result<T>(T value) => new(value);
-
+        public static implicit operator Result<T>(Error error) => new(error);
         public static implicit operator T(Result<T> source) => source.Value;
 
         #endregion
