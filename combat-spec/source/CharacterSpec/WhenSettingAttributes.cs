@@ -17,7 +17,7 @@ namespace EventSourcingDemo.CombatSpec.CharacterSpec
 
         public static IEnumerable<object[]> GetSetAttributes()
         {
-            yield return new object[] { new Attributes(20, 0, 20, 10, 2, 20) };
+            yield return new object[] { new Attributes(1, 2, 3, 4, 5, 6) };
             yield return new object[] { new Attributes(2, 3, 4, 5, 6, 7) };
         }
 
@@ -28,7 +28,7 @@ namespace EventSourcingDemo.CombatSpec.CharacterSpec
         [Fact]
         public void GivenIdenticalAttributes_ThenReturnNoOpError()
         {
-            var error = _character.Set(Attributes.Default).Error;
+            var error = _character.Set(new Attributes(20, 0, 20, 10, 2, 20)).Error;
 
             error.Should().Be(Character.NoOp());
         }

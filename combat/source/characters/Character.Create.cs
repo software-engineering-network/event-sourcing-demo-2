@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace EventSourcingDemo.Combat
 {
@@ -41,43 +42,17 @@ namespace EventSourcingDemo.Combat
         #endregion
     }
 
-    public record CreateCharacter : Command
-    {
-        #region Creation
-
-        public CreateCharacter(string category, string name, Attributes? attributes) : base(category)
-        {
-            Name = name;
-            Attributes = attributes;
-        }
-
-        #endregion
-
-        #region Public Interface
-
-        public Attributes? Attributes { get; set; }
-        public string Name { get; init; }
-
-        public void Deconstruct(out string name)
-        {
-            name = Name;
-        }
-
-        #endregion
-    }
+    public record CreateCharacter(Attributes Attributes, string Name) : Command;
 
     public record CharacterCreated : Event
     {
         #region Creation
 
-        public CharacterCreated(
-            StreamId streamId,
-            string name,
-            Attributes attributes = default
-        ) : base(streamId)
+        public CharacterCreated(Guid id, Attributes attributes, string name)
         {
+            Id = id;
+            Attributes = attributes;
             Name = name;
-            Attributes = attributes ?? Attributes.Default;
         }
 
         #endregion
@@ -87,13 +62,10 @@ namespace EventSourcingDemo.Combat
         public Attributes Attributes { get; init; }
         public string Name { get; init; }
 
-        public void Deconstruct(
-            out string name,
-            out Attributes attributes
-        )
+        public void Deconstruct(out Attributes Attributes, out string Name)
         {
-            attributes = Attributes;
-            name = Name;
+            Attributes = this.Attributes;
+            Name = this.Name;
         }
 
         #endregion

@@ -31,10 +31,14 @@ namespace EventSourcingDemo.Combat
 
             return _store.Push(
                 new CharacterCreated(
-                    new(Category, command.EntityId),
-                    command.Name,
-                    Attributes.Default
+                    command.EntityId,
+                    command.Attributes,
+                    command.Name
                 )
+                {
+                    Category = Category,
+                    EntityId = command.EntityId
+                }
             );
         }
 
@@ -42,29 +46,21 @@ namespace EventSourcingDemo.Combat
 
         #region IHandler<RenameCharacter> Implementation
 
-        public Result Handle(RenameCharacter command)
-        {
-            var (entityStreamId, name) = command;
-
-            return _store.Find(entityStreamId)
+        public Result Handle(RenameCharacter command) =>
+            _store.Find(command.GetEntityStreamId())
                 .Bind(stream => From(stream))
-                .Bind(character => character.Rename(name))
+                .Bind(character => character.Rename(command.Name))
                 .Bind(characterRenamed => _store.Push(characterRenamed));
-        }
 
         #endregion
 
         #region IHandler<SetAttributes> Implementation
 
-        public Result Handle(SetAttributes command)
-        {
-            var (entityStreamId, attributes) = command;
-
-            return _store.Find(entityStreamId)
+        public Result Handle(SetAttributes command) =>
+            _store.Find(command.GetEntityStreamId())
                 .Bind(stream => From(stream))
-                .Bind(character => character.Set(attributes))
+                .Bind(character => character.Set(command.Attributes))
                 .Bind(attributesSet => _store.Push(attributesSet));
-        }
 
         #endregion
     }

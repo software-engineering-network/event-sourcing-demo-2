@@ -1,4 +1,5 @@
-﻿using EventSourcingDemo.Combat;
+﻿using System;
+using EventSourcingDemo.Combat;
 using static EventSourcingDemo.Combat.Character;
 
 namespace EventSourcingDemo.CombatSpec
@@ -7,12 +8,14 @@ namespace EventSourcingDemo.CombatSpec
     {
         #region Static Interface
 
-        public static Character CreateCharacter()
-        {
-            var streamId = new StreamId(CharacterManagementService.Category);
-
-            return From(new CharacterCreated(streamId, "Mario")).Value;
-        }
+        public static Character CreateCharacter() =>
+            From(
+                new CharacterCreated(
+                    Guid.NewGuid(),
+                    new Attributes(20, 0, 20, 10, 2, 20),
+                    "Mario"
+                )
+            ).Value;
 
         #endregion
     }

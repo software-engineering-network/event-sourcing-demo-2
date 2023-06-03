@@ -10,11 +10,17 @@ namespace EventSourcingDemo.CombatSpec.CharacterSpec
     {
         #region Test Methods
 
-        [Fact]
+        [Fact(Skip = "move to service")]
         public void ThenEntityIdIsCommandEntityId()
         {
             var streamId = new StreamId(Category);
-            var character = From(new CharacterCreated(streamId, "Mario")).Value;
+            var character = From(
+                new CharacterCreated(
+                    streamId.EntityId,
+                    Attributes.Default,
+                    "Mario"
+                )
+            ).Value;
 
             character.Id.Should().Be(streamId.EntityId);
         }

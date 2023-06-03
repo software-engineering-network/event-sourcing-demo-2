@@ -1,4 +1,5 @@
-﻿using EventSourcingDemo.Combat;
+﻿using System;
+using EventSourcingDemo.Combat;
 using FluentAssertions;
 using Xunit;
 using static EventSourcingDemo.Combat.Character;
@@ -12,8 +13,11 @@ namespace EventSourcingDemo.CombatSpec.CharacterSpec
         [Fact]
         public void ThenReducerRenamesCharacter()
         {
-            var streamId = new StreamId(CharacterManagementService.Category);
-            var characterCreated = new CharacterCreated(streamId, "Mario");
+            var characterCreated = new CharacterCreated(
+                Guid.NewGuid(),
+                new Attributes(20, 0, 20, 10, 2, 20),
+                "Mario"
+            );
             var character = From(characterCreated).Value;
             var characterRenamed = character.Rename("Maria").Value;
 
