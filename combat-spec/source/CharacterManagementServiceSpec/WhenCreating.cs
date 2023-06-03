@@ -36,25 +36,24 @@ namespace EventSourcingDemo.CombatSpec.CharacterManagementServiceSpec
         public void ThenEntityIdMatchesCommandEntityId() => _event.EntityId.Should().Be(_command.EntityId);
 
         #endregion
-    }
 
-    public class GivenAConflictingCharacter
-    {
-        #region Test Methods
-
-        [Fact]
-        public void WhenCreatingCharacter_ThenReturnCharacterAlreadyExistsError()
+        public class GivenAConflictingCharacter
         {
-            var store = new MockEventStore();
-            var service = new CharacterManagementService(store);
+            #region Test Methods
 
-            service.Handle(new CreateCharacter(Attributes.Mario, "Mario"));
+            [Fact]
+            public void ThenReturnCharacterAlreadyExistsError()
+            {
+                var store = new MockEventStore();
+                var service = new CharacterManagementService(store);
+                service.Handle(new CreateCharacter(Attributes.Mario, "Mario"));
 
-            var error = service.Handle(new CreateCharacter(Attributes.Mario, "Mario")).Error;
+                var error = service.Handle(new CreateCharacter(Attributes.Mario, "Mario")).Error;
 
-            error.Should().Be(CharacterAlreadyExists());
+                error.Should().Be(CharacterAlreadyExists());
+            }
+
+            #endregion
         }
-
-        #endregion
     }
 }
