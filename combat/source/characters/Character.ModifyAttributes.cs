@@ -2,7 +2,7 @@
 {
     public partial class Character
     {
-        #region Public Interface
+        #region Implementation
 
         /// <summary>Adds the supplied attributes delta to the current <see cref="Attributes" />.</summary>
         /// <param name="delta"></param>

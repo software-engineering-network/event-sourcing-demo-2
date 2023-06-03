@@ -13,7 +13,7 @@ namespace EventSourcingDemo.Combat
 
         #endregion
 
-        #region Public Interface
+        #region Implementation
 
         public Error Error { get; }
         public bool WasFailure => !WasSuccessful;
@@ -44,7 +44,7 @@ namespace EventSourcingDemo.Combat
 
         #endregion
 
-        #region Public Interface
+        #region Implementation
 
         public T Value { get; }
         public Result Bind(Func<T, Result> next) => WasFailure ? this : next(Value);

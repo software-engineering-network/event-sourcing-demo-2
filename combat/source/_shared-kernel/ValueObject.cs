@@ -15,7 +15,7 @@ namespace EventSourcingDemo.Combat
             if (other.GetType() != GetType())
                 return false;
 
-            return ((ValueObject)other).GetEqualityComponents()
+            return ((ValueObject) other).GetEqualityComponents()
                 .SequenceEqual(GetEqualityComponents());
         }
 

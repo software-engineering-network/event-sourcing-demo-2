@@ -9,13 +9,13 @@ namespace EventSourcingDemo.CombatSpec.CharacterSpec
 {
     public class WhenSettingAttributes
     {
-        #region Core
+        #region Setup
 
         private readonly Character _character = CreateCharacter();
 
         #endregion
 
-        #region Public Interface
+        #region Implementation
 
         public static IEnumerable<object[]> GetSetAttributes()
         {
@@ -25,7 +25,7 @@ namespace EventSourcingDemo.CombatSpec.CharacterSpec
 
         #endregion
 
-        #region Test Methods
+        #region Requirements
 
         [Fact]
         public void GivenIdenticalAttributes_ThenReturnNoOpError()

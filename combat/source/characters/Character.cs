@@ -34,16 +34,11 @@ namespace EventSourcingDemo.Combat
 
         #endregion
 
-        #region Public Interface
-
-        public Attributes Attributes { get; }
-        public string Name { get; }
-
-        #endregion
-
-        #region Private Interface
+        #region Implementation
 
         private StreamId StreamId => new(Category, Id);
+        public Attributes Attributes { get; }
+        public string Name { get; }
 
         #endregion
 
@@ -51,7 +46,7 @@ namespace EventSourcingDemo.Combat
 
         private static void Register<T>(Func<Character, T, Character> handler) where T : Event
         {
-            Handlers.Add(typeof(T), (character, @event) => handler(character, (T)@event));
+            Handlers.Add(typeof(T), (character, @event) => handler(character, (T) @event));
         }
 
         #endregion

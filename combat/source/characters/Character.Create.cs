@@ -15,15 +15,6 @@ namespace EventSourcingDemo.Combat
         {
         }
 
-        #endregion
-
-        #region Static Interface
-
-        private static Character Apply(Character target, CharacterCreated @event) => new(@event);
-
-        public static Error CharacterAlreadyExists(string message = "") =>
-            new($"{nameof(Character)}.{nameof(CharacterAlreadyExists)}", message);
-
         public static Result<Character> Rehydrate(params Event[] stream)
         {
             if (stream[0].GetType() != typeof(CharacterCreated))
@@ -40,6 +31,15 @@ namespace EventSourcingDemo.Combat
         }
 
         #endregion
+
+        #region Static Interface
+
+        private static Character Apply(Character target, CharacterCreated @event) => new(@event);
+
+        public static Error CharacterAlreadyExists(string message = "") =>
+            new($"{nameof(Character)}.{nameof(CharacterAlreadyExists)}", message);
+
+        #endregion
     }
 
     public record CreateCharacter : Command
@@ -54,18 +54,18 @@ namespace EventSourcingDemo.Combat
             Name = name;
         }
 
-        #endregion
-
-        #region Public Interface
-
-        public Attributes Attributes { get; init; }
-        public string Name { get; init; }
-
         public void Deconstruct(out Attributes Attributes, out string Name)
         {
             Attributes = this.Attributes;
             Name = this.Name;
         }
+
+        #endregion
+
+        #region Implementation
+
+        public Attributes Attributes { get; init; }
+        public string Name { get; init; }
 
         #endregion
     }
@@ -81,18 +81,18 @@ namespace EventSourcingDemo.Combat
             Name = name;
         }
 
-        #endregion
-
-        #region Public Interface
-
-        public Attributes Attributes { get; init; }
-        public string Name { get; init; }
-
         public void Deconstruct(out Attributes Attributes, out string Name)
         {
             Attributes = this.Attributes;
             Name = this.Name;
         }
+
+        #endregion
+
+        #region Implementation
+
+        public Attributes Attributes { get; init; }
+        public string Name { get; init; }
 
         #endregion
     }

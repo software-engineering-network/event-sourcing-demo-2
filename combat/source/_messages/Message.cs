@@ -4,11 +4,11 @@ namespace EventSourcingDemo.Combat
 {
     public abstract record Message
     {
-        #region Public Interface
+        #region Implementation
 
-        public string Category { get; init; }
-        public Guid EntityId { get; init; }
         public Guid Id { get; init; } = Guid.NewGuid();
+        public Guid EntityId { get; init; }
+        public string Category { get; init; }
         public Metadata Metadata { get; init; }
         public Version Version { get; set; }
 

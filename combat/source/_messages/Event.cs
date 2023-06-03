@@ -2,7 +2,7 @@
 {
     public abstract record Event : Message
     {
-        #region Public Interface
+        #region Implementation
 
         public Event Apply(Metadata metadata, StreamId streamId, Version version)
         {

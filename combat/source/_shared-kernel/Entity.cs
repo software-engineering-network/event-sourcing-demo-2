@@ -13,7 +13,7 @@ namespace EventSourcingDemo.Combat
 
         #endregion
 
-        #region Public Interface
+        #region Implementation
 
         public Guid Id { get; }
 

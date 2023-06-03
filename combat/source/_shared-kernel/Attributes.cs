@@ -30,7 +30,7 @@ namespace EventSourcingDemo.Combat
 
         #endregion
 
-        #region Public Interface
+        #region Implementation
 
         public short Attack { get; }
         public short Defense { get; }
@@ -60,12 +60,12 @@ namespace EventSourcingDemo.Combat
 
         public static Attributes operator +(Attributes left, Attributes right) =>
             new(
-                (short)(left.Attack + right.Attack),
-                (short)(left.Defense + right.Defense),
-                (short)(left.HitPoints + right.HitPoints),
-                (short)(left.MagicAttack + right.MagicAttack),
-                (short)(left.MagicDefense + right.MagicDefense),
-                (short)(left.Speed + right.Speed)
+                (short) (left.Attack + right.Attack),
+                (short) (left.Defense + right.Defense),
+                (short) (left.HitPoints + right.HitPoints),
+                (short) (left.MagicAttack + right.MagicAttack),
+                (short) (left.MagicDefense + right.MagicDefense),
+                (short) (left.Speed + right.Speed)
             );
 
         #endregion

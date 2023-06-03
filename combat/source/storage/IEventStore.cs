@@ -32,14 +32,6 @@ namespace EventSourcingDemo.Combat
             IsCommand = isCommand;
         }
 
-        #endregion
-
-        #region Public Interface
-
-        public string Category { get; init; }
-        public Guid? EntityId { get; init; }
-        public bool IsCommand { get; init; }
-
         public void Deconstruct(
             out string Category,
             out Guid? EntityId,
@@ -50,6 +42,14 @@ namespace EventSourcingDemo.Combat
             EntityId = this.EntityId;
             IsCommand = this.IsCommand;
         }
+
+        #endregion
+
+        #region Implementation
+
+        public Guid? EntityId { get; init; }
+        public string Category { get; init; }
+        public bool IsCommand { get; init; }
 
         #endregion
     }

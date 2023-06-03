@@ -11,7 +11,7 @@
 
         #endregion
 
-        #region Public Interface
+        #region Implementation
 
         public Result<CharacterRenamed> Rename(string name) => new CharacterRenamed(name);
 

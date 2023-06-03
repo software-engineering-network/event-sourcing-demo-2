@@ -9,7 +9,7 @@ namespace EventSourcingDemo.CombatSpec.CharacterManagementServiceSpec
 {
     public class WhenCreatingACharacter
     {
-        #region Core
+        #region Setup
 
         private readonly CreateCharacter _command;
         private readonly CharacterCreated _event;
@@ -21,12 +21,12 @@ namespace EventSourcingDemo.CombatSpec.CharacterManagementServiceSpec
 
             var stream = store.Find(new StreamId(Category, _command.EntityId)).Value;
 
-            _event = (CharacterCreated)stream[0];
+            _event = (CharacterCreated) stream[0];
         }
 
         #endregion
 
-        #region Test Methods
+        #region Requirements
 
         [Fact]
         public void ThenCategoryIsCharacterManagement() => _event.Category.Should().Be(Category);
@@ -38,7 +38,7 @@ namespace EventSourcingDemo.CombatSpec.CharacterManagementServiceSpec
 
         public class GivenAConflictingCharacter
         {
-            #region Test Methods
+            #region Requirements
 
             [Fact]
             public void ThenReturnCharacterAlreadyExistsError()

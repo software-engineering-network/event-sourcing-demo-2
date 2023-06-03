@@ -2,7 +2,7 @@
 {
     public record Command : Message
     {
-        #region Public Interface
+        #region Implementation
 
         public StreamId GetEntityStreamId() => new(Category, EntityId);
 

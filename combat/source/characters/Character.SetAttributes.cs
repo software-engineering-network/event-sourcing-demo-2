@@ -11,7 +11,7 @@
 
         #endregion
 
-        #region Public Interface
+        #region Implementation
 
         /// <summary>Replaces the current <see cref="Attributes" />.</summary>
         /// <param name="attributes"></param>

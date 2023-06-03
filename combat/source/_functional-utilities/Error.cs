@@ -14,7 +14,7 @@ namespace EventSourcingDemo.Combat
 
         #endregion
 
-        #region Public Interface
+        #region Implementation
 
         public string Code { get; }
         public string Message { get; }
@@ -40,7 +40,7 @@ namespace EventSourcingDemo.Combat
                 return true;
             if (obj.GetType() != GetType())
                 return false;
-            return Equals((Error)obj);
+            return Equals((Error) obj);
         }
 
         public override int GetHashCode() => HashCode.Combine(Code, Message);

@@ -8,7 +8,7 @@ namespace EventSourcingDemo.CombatSpec.CharacterSpec
 {
     public class WhenRenaming
     {
-        #region Test Methods
+        #region Requirements
 
         [Fact]
         public void ThenReducerRenamesCharacter()
