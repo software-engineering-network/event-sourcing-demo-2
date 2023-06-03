@@ -1,4 +1,5 @@
-﻿using static EventSourcingDemo.Combat.Character;
+﻿using System.Linq;
+using static EventSourcingDemo.Combat.Character;
 using static EventSourcingDemo.Combat.Command;
 
 namespace EventSourcingDemo.Combat
@@ -26,7 +27,12 @@ namespace EventSourcingDemo.Combat
         {
             var result = _store.Find(new(Category));
 
-            if (result.WasSuccessful)
+            if (result.WasFailure)
+                return result.Error;
+
+            var stream = result.Value;
+
+            if (stream.Any(x => x.EntityId == command.EntityId))
                 return CannotDuplicateCharacter();
 
             return _store.Push(

@@ -38,12 +38,12 @@ namespace EventSourcingDemo.Combat
         #region Public Interface
 
         public string Category { get; init; }
-        public Guid EntityId { get; init; }
+        public Guid? EntityId { get; init; }
         public bool IsCommand { get; init; }
 
         public void Deconstruct(
             out string Category,
-            out Guid EntityId,
+            out Guid? EntityId,
             out bool IsCommand
         )
         {

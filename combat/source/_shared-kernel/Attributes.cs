@@ -7,6 +7,7 @@ namespace EventSourcingDemo.Combat
     public class Attributes : ValueObject
     {
         public static readonly Attributes Default = new(0, 0, 0, 0, 0, 0);
+        public static readonly Attributes Mario = new(20, 0, 20, 10, 2, 20);
 
         #region Creation
 

@@ -42,7 +42,33 @@ namespace EventSourcingDemo.Combat
         #endregion
     }
 
-    public record CreateCharacter(Attributes Attributes, string Name) : Command;
+    public record CreateCharacter : Command
+    {
+        #region Creation
+
+        public CreateCharacter(Attributes attributes, string name)
+        {
+            Category = CharacterManagementService.Category;
+            EntityId = Guid.NewGuid();
+            Attributes = attributes;
+            Name = name;
+        }
+
+        #endregion
+
+        #region Public Interface
+
+        public Attributes Attributes { get; init; }
+        public string Name { get; init; }
+
+        public void Deconstruct(out Attributes Attributes, out string Name)
+        {
+            Attributes = this.Attributes;
+            Name = this.Name;
+        }
+
+        #endregion
+    }
 
     public record CharacterCreated : Event
     {
