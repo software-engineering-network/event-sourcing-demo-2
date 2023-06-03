@@ -3,6 +3,7 @@ using FluentAssertions;
 using Xunit;
 using static EventSourcingDemo.Combat.Character;
 using static EventSourcingDemo.Combat.CharacterManagementService;
+using static EventSourcingDemo.CombatSpec.ObjectProvider;
 
 namespace EventSourcingDemo.CombatSpec.CharacterManagementServiceSpec
 {
@@ -15,9 +16,7 @@ namespace EventSourcingDemo.CombatSpec.CharacterManagementServiceSpec
 
         public WhenCreating()
         {
-            var store = new MockEventStore();
-            var service = new CharacterManagementService(store);
-
+            var service = CreateService(out var store);
             service.Handle(_command = new CreateCharacter(Attributes.Mario, "Mario"));
 
             var stream = store.Find(new StreamId(Category, _command.EntityId)).Value;
@@ -44,8 +43,7 @@ namespace EventSourcingDemo.CombatSpec.CharacterManagementServiceSpec
             [Fact]
             public void ThenReturnCharacterAlreadyExistsError()
             {
-                var store = new MockEventStore();
-                var service = new CharacterManagementService(store);
+                var service = CreateService();
                 service.Handle(new CreateCharacter(Attributes.Mario, "Mario"));
 
                 var error = service.Handle(new CreateCharacter(Attributes.Mario, "Mario")).Error;

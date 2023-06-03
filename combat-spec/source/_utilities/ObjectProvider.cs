@@ -10,6 +10,11 @@ namespace EventSourcingDemo.CombatSpec
 
         public static Character CreateCharacter() => From(GetCharacterCreated()).Value;
 
+        public static CharacterManagementService CreateService() => new(new MockEventStore());
+
+        public static CharacterManagementService CreateService(out MockEventStore store) =>
+            new(store = new MockEventStore());
+
         public static CharacterCreated GetCharacterCreated() =>
             new(
                 Guid.NewGuid(),
