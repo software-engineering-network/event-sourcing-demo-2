@@ -80,5 +80,23 @@
 
             #endregion
         }
+
+        public record CharacterRenamed : Event
+        {
+            #region Creation
+
+            public CharacterRenamed(StreamId streamId, string name) : base(streamId)
+            {
+                Name = name;
+            }
+
+            #endregion
+
+            #region Public Interface
+
+            public string Name { get; init; }
+
+            #endregion
+        }
     }
 }
