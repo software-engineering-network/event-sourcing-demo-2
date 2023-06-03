@@ -5,6 +5,7 @@ namespace EventSourcingDemo.Combat
 {
     public class CharacterManagementService :
         IHandler<CreateCharacter>,
+        IHandler<RenameCharacter>,
         IHandler<SetAttributes>
     {
         public const string Category = "CharacterManagement";
@@ -35,6 +36,20 @@ namespace EventSourcingDemo.Combat
                     Attributes.Default
                 )
             );
+        }
+
+        #endregion
+
+        #region IHandler<RenameCharacter> Implementation
+
+        public Result Handle(RenameCharacter command)
+        {
+            var (entityStreamId, name) = command;
+
+            return _store.Find(entityStreamId)
+                .Bind(stream => From(stream))
+                .Bind(character => character.Rename(name))
+                .Bind(characterRenamed => _store.Push(characterRenamed));
         }
 
         #endregion

@@ -1,37 +1,57 @@
-﻿using static EventSourcingDemo.Combat.CharacterManagementService;
+﻿using System;
+using System.Collections.Generic;
+using static EventSourcingDemo.Combat.CharacterManagementService;
 
 namespace EventSourcingDemo.Combat
 {
     public partial class Character : Aggregate
     {
+        private static readonly Dictionary<Type, Func<Character, Event, Character>> Handlers = new();
+
+        #region Creation
+
+        static Character()
+        {
+            Register<CharacterCreated>(Apply);
+            Register<CharacterRenamed>(Apply);
+            Register<AttributesSet>(Apply);
+        }
+
+        private Character(Guid id, Attributes attributes, string name) : base(id)
+        {
+            Attributes = attributes;
+            Name = name;
+        }
+
+        private Character(Character source) : this(
+            source.Id,
+            source.Attributes,
+            source.Name
+        )
+        {
+        }
+
+        #endregion
+
         #region Public Interface
 
         public Attributes Attributes { get; }
         public string Name { get; }
-
-        /// <summary>Adds the supplied attributes delta to the current <see cref="Attributes" />.</summary>
-        /// <param name="delta"></param>
-        /// <returns>Either an <see cref="AttributesModified" /> event or an <see cref="Error" />.</returns>
-        public Result<AttributesModified> Add(Attributes delta) => new AttributesModified(StreamId, delta);
-
-        public Result<CharacterRenamed> Rename(string name) => new CharacterRenamed(StreamId, name);
-
-        /// <summary>Replaces the current <see cref="Attributes" />.</summary>
-        /// <param name="attributes"></param>
-        /// <returns>Either an <see cref="AttributesSet" /> event or an <see cref="Error" />.</returns>
-        public Result<AttributesSet> Set(Attributes attributes)
-        {
-            if (attributes == Attributes)
-                return NoOp("No operation necessary.");
-
-            return new AttributesSet(StreamId, attributes);
-        }
 
         #endregion
 
         #region Private Interface
 
         private StreamId StreamId => new(Category, Id);
+
+        #endregion
+
+        #region Static Interface
+
+        private static void Register<T>(Func<Character, T, Character> handler) where T : Event
+        {
+            Handlers.Add(typeof(T), (character, @event) => handler(character, (T)@event));
+        }
 
         #endregion
     }
