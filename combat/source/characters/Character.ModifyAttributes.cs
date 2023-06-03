@@ -7,7 +7,13 @@
         /// <summary>Adds the supplied attributes delta to the current <see cref="Attributes" />.</summary>
         /// <param name="delta"></param>
         /// <returns>Either an <see cref="AttributesModified" /> event or an <see cref="Error" />.</returns>
-        public Result<AttributesModified> Add(Attributes delta) => new AttributesModified(delta);
+        public Result<AttributesModified> Add(Attributes delta)
+        {
+            if (delta == Attributes.Default)
+                return NoOp();
+
+            return new AttributesModified(delta);
+        }
 
         #endregion
     }
