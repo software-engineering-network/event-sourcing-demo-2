@@ -7,6 +7,7 @@
         public static Error CannotDuplicateCharacter(string message = "") =>
             new($"{nameof(Character)}.CannotDuplicateCharacter", message);
 
+        public static Error NoOp(string message = "") => new($"{nameof(Character)}.NoOp", message);
         public static Error StreamError(string message = "") => new($"{nameof(Character)}.StreamError", message);
 
         #endregion

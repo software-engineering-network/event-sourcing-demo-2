@@ -46,7 +46,10 @@ namespace EventSourcingDemo.Combat
 
             public Attributes Attributes { get; init; }
 
-            public void Deconstruct(out StreamId entityStreamId, out Attributes attributes)
+            public void Deconstruct(
+                out StreamId entityStreamId,
+                out Attributes attributes
+            )
             {
                 entityStreamId = GetEntityStreamId();
                 attributes = Attributes;

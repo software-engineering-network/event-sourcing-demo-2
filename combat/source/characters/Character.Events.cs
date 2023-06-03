@@ -2,6 +2,29 @@
 {
     public partial class Character
     {
+        public record AttributesModified : Event
+        {
+            #region Creation
+
+            public AttributesModified(StreamId streamId, Attributes delta) : base(streamId)
+            {
+                Delta = delta;
+            }
+
+            #endregion
+
+            #region Public Interface
+
+            public Attributes Delta { get; init; }
+
+            public void Deconstruct(out Attributes delta)
+            {
+                delta = Delta;
+            }
+
+            #endregion
+        }
+
         public record AttributesSet : Event
         {
             #region Creation

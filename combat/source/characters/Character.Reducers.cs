@@ -13,8 +13,7 @@ namespace EventSourcingDemo.Combat
         static Character()
         {
             Register<CharacterCreated>(Apply);
-
-            //Register<AttributesModified>(Apply);
+            Register<AttributesSet>(Apply);
         }
 
         private Character(Guid id, Attributes attributes, string name) : base(id)
@@ -24,7 +23,7 @@ namespace EventSourcingDemo.Combat
         }
 
         private Character(CharacterCreated source) : this(
-            source.Id,
+            source.EntityId,
             source.Attributes,
             source.Name
         )
@@ -73,15 +72,15 @@ namespace EventSourcingDemo.Combat
 
         #region Static Interface
 
-        /// <summary>
-        ///     Reducer. Takes the current <see cref="Character" /> instance and applies the supplied
-        ///     <see cref="AttributesModified" /> event.
-        /// </summary>
-        /// <param name="event"></param>
-        /// <returns>A new <see cref="Character" /> with the <see cref="AttributesModified" /> event applied.</returns>
         private static Character Apply(Character target, CharacterCreated @event) => new(@event);
 
-        //private static Character Apply(Character target, AttributesModified @event) => new(target, @event.Attributes);
+        /// <summary>
+        ///     Reducer. Takes the current <see cref="Character" /> instance and applies the supplied
+        ///     <see cref="AttributesSet" /> event.
+        /// </summary>
+        /// <param name="event"></param>
+        /// <returns>A new <see cref="Character" /> with the <see cref="AttributesSet" /> event applied.</returns>
+        private static Character Apply(Character target, AttributesSet @event) => new(target, @event.Attributes);
 
         private static void Register<T>(Func<Character, T, Character> handler) where T : Event
         {

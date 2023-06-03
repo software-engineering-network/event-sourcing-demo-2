@@ -27,7 +27,13 @@ namespace EventSourcingDemo.Combat
         public string Category { get; init; }
         public Guid EntityId { get; init; }
         public Guid Id { get; init; }
+        public Metadata Metadata { get; init; }
+        public Version Version { get; set; }
 
         #endregion
     }
+
+    public record Metadata(Guid TraceId, Guid UserId);
+
+    public record Version(long Global, long Local);
 }

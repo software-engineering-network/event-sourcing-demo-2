@@ -18,14 +18,16 @@ namespace EventSourcingDemo.Combat
 
         #region Public Interface
 
-        public Event Apply(StreamId streamId)
+        public Event Apply(Metadata metadata, StreamId streamId, Version version)
         {
             var (category, entityId, _) = streamId;
 
             return this with
             {
                 Category = category,
-                EntityId = entityId
+                EntityId = entityId,
+                Metadata = metadata,
+                Version = version
             };
         }
 
