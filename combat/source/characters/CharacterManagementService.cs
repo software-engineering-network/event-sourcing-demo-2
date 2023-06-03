@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using static EventSourcingDemo.Combat.Character;
 using static EventSourcingDemo.Combat.Command;
 
@@ -32,8 +33,10 @@ namespace EventSourcingDemo.Combat
 
             var stream = result.Value;
 
-            if (stream.Any(x => x.EntityId == command.EntityId))
-                return CannotDuplicateCharacter();
+            var characters = CreateCharacters(stream);
+
+            if (characters.Any(x => x.Name == command.Name))
+                return CharacterAlreadyExists();
 
             return _store.Push(
                 new CharacterCreated(
@@ -67,6 +70,17 @@ namespace EventSourcingDemo.Combat
                 .Bind(stream => From(stream))
                 .Bind(character => character.Set(command.Attributes))
                 .Bind(attributesSet => _store.Push(attributesSet));
+
+        #endregion
+
+        #region Static Interface
+
+        private static List<Character> CreateCharacters(IEnumerable<Event> stream)
+        {
+            var entityStreamIds = stream.Select(x => new StreamId(Category, x.EntityId)).Distinct();
+
+            return entityStreamIds.Select(id => From(stream.Where(x => x.IsInEntity(id)).ToArray()).Value).ToList();
+        }
 
         #endregion
     }

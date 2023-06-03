@@ -36,8 +36,8 @@ namespace EventSourcingDemo.Combat
 
         private static Character Apply(Character target, CharacterCreated @event) => new(@event);
 
-        public static Error CannotDuplicateCharacter(string message = "") =>
-            new($"{nameof(Character)}.{nameof(CannotDuplicateCharacter)}", message);
+        public static Error CharacterAlreadyExists(string message = "") =>
+            new($"{nameof(Character)}.{nameof(CharacterAlreadyExists)}", message);
 
         #endregion
     }

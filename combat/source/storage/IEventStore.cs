@@ -18,7 +18,6 @@ namespace EventSourcingDemo.Combat
         )
         {
             Category = category;
-            EntityId = Guid.NewGuid();
             IsCommand = isCommand;
         }
 
