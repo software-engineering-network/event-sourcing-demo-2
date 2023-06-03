@@ -41,29 +41,6 @@ namespace EventSourcingDemo.Combat
         #endregion
     }
 
-    public record AttributesSet : Event
-    {
-        #region Creation
-
-        public AttributesSet(StreamId streamId, Attributes attributes) : base(streamId)
-        {
-            Attributes = attributes;
-        }
-
-        #endregion
-
-        #region Public Interface
-
-        public Attributes Attributes { get; init; }
-
-        public void Deconstruct(out Attributes attributes)
-        {
-            attributes = Attributes;
-        }
-
-        #endregion
-    }
-
     public record SetAttributes : Command
     {
         #region Creation
@@ -87,6 +64,29 @@ namespace EventSourcingDemo.Combat
         )
         {
             entityStreamId = GetEntityStreamId();
+            attributes = Attributes;
+        }
+
+        #endregion
+    }
+
+    public record AttributesSet : Event
+    {
+        #region Creation
+
+        public AttributesSet(StreamId streamId, Attributes attributes) : base(streamId)
+        {
+            Attributes = attributes;
+        }
+
+        #endregion
+
+        #region Public Interface
+
+        public Attributes Attributes { get; init; }
+
+        public void Deconstruct(out Attributes attributes)
+        {
             attributes = Attributes;
         }
 
