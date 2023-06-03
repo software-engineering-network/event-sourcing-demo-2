@@ -13,6 +13,7 @@ namespace EventSourcingDemo.Combat
         static Character()
         {
             Register<CharacterCreated>(Apply);
+            Register<CharacterRenamed>(Apply);
             Register<AttributesSet>(Apply);
         }
 
@@ -41,6 +42,11 @@ namespace EventSourcingDemo.Combat
         private Character(Character source, Attributes attributes) : this(source)
         {
             Attributes = attributes;
+        }
+
+        private Character(Character source, string name) : this(source)
+        {
+            Name = name;
         }
 
         public static Result<Character> From(params Event[] stream)
@@ -81,6 +87,8 @@ namespace EventSourcingDemo.Combat
         /// <param name="event"></param>
         /// <returns>A new <see cref="Character" /> with the <see cref="AttributesSet" /> event applied.</returns>
         private static Character Apply(Character target, AttributesSet @event) => new(target, @event.Attributes);
+
+        private static Character Apply(Character target, CharacterRenamed @event) => new(target, @event.Name);
 
         private static void Register<T>(Func<Character, T, Character> handler) where T : Event
         {

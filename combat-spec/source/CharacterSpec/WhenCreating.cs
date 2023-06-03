@@ -21,21 +21,4 @@ namespace EventSourcingDemo.CombatSpec.CharacterSpec
 
         #endregion
     }
-
-    public class WhenRenaming
-    {
-        #region Test Methods
-
-        [Fact]
-        public void ThenReturnCharacterRenamedEvent()
-        {
-            var character = ObjectProvider.CreateCharacter();
-
-            var @event = character.Rename("Maria").Value;
-
-            @event.Name.Should().Be("Maria");
-        }
-
-        #endregion
-    }
 }
