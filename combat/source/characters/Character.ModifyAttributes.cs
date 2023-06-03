@@ -16,6 +16,13 @@
         }
 
         #endregion
+
+        #region Static Interface
+
+        public static Character Apply(Character target, AttributesModified @event) =>
+            new(target, target.Attributes + @event.Delta);
+
+        #endregion
     }
 
     public record ModifyAttributes(Attributes Delta) : Command;

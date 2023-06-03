@@ -2,6 +2,8 @@
 using EventSourcingDemo.Combat;
 using FluentAssertions;
 using Xunit;
+using static EventSourcingDemo.Combat.Character;
+using static EventSourcingDemo.CombatSpec.ObjectProvider;
 
 namespace EventSourcingDemo.CombatSpec.CharacterSpec
 {
@@ -9,7 +11,7 @@ namespace EventSourcingDemo.CombatSpec.CharacterSpec
     {
         #region Core
 
-        private readonly Character _character = ObjectProvider.CreateCharacter();
+        private readonly Character _character = CreateCharacter();
 
         #endregion
 
@@ -30,7 +32,19 @@ namespace EventSourcingDemo.CombatSpec.CharacterSpec
         {
             var error = _character.Set(new Attributes(20, 0, 20, 10, 2, 20)).Error;
 
-            error.Should().Be(Character.NoOp());
+            error.Should().Be(NoOp());
+        }
+
+        [Fact]
+        public void ThenReducerSetsAttributes()
+        {
+            var attributes = new Attributes(10, 1, 5, 8, 15, 6);
+            var character = From(
+                GetCharacterCreated(),
+                new AttributesSet(attributes)
+            ).Value;
+
+            character.Attributes.Should().Be(attributes);
         }
 
         [Theory]

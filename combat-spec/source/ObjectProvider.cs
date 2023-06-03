@@ -8,14 +8,14 @@ namespace EventSourcingDemo.CombatSpec
     {
         #region Static Interface
 
-        public static Character CreateCharacter() =>
-            From(
-                new CharacterCreated(
-                    Guid.NewGuid(),
-                    new Attributes(20, 0, 20, 10, 2, 20),
-                    "Mario"
-                )
-            ).Value;
+        public static Character CreateCharacter() => From(GetCharacterCreated()).Value;
+
+        public static CharacterCreated GetCharacterCreated() =>
+            new(
+                Guid.NewGuid(),
+                new Attributes(20, 0, 20, 10, 2, 20),
+                "Mario"
+            );
 
         #endregion
     }

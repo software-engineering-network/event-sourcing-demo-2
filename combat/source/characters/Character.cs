@@ -12,9 +12,10 @@ namespace EventSourcingDemo.Combat
 
         static Character()
         {
+            Register<AttributesModified>(Apply);
+            Register<AttributesSet>(Apply);
             Register<CharacterCreated>(Apply);
             Register<CharacterRenamed>(Apply);
-            Register<AttributesSet>(Apply);
         }
 
         private Character(Guid id, Attributes attributes, string name) : base(id)

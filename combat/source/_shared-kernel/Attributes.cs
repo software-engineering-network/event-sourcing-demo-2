@@ -1,49 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace EventSourcingDemo.Combat
 {
-    public abstract class ValueObject
-    {
-        #region Equality
-
-        public override bool Equals(object other)
-        {
-            if (other is null)
-                return false;
-
-            if (other.GetType() != GetType())
-                return false;
-
-            return ((ValueObject)other).GetEqualityComponents()
-                .SequenceEqual(GetEqualityComponents());
-        }
-
-        public abstract IEnumerable<object> GetEqualityComponents();
-
-        public override int GetHashCode() => GetEqualityComponents().GetHashCode();
-
-        #endregion
-
-        #region Static Interface
-
-        public static bool operator ==(ValueObject left, ValueObject right)
-        {
-            if (left is null)
-                return right is null;
-
-            if (right is null)
-                return false;
-
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(ValueObject left, ValueObject right) => right == left;
-
-        #endregion
-    }
-
     [DebuggerDisplay("A:{Attack} D:{Defense} HP:{HitPoints} MA:{MagicAttack} MD:{MagicDefense} S:{Speed}")]
     public class Attributes : ValueObject
     {
@@ -52,12 +11,12 @@ namespace EventSourcingDemo.Combat
         #region Creation
 
         public Attributes(
-            ushort attack,
-            ushort defense,
-            ushort hitPoints,
-            ushort magicAttack,
-            ushort magicDefense,
-            ushort speed
+            short attack,
+            short defense,
+            short hitPoints,
+            short magicAttack,
+            short magicDefense,
+            short speed
         )
         {
             Attack = attack;
@@ -72,12 +31,12 @@ namespace EventSourcingDemo.Combat
 
         #region Public Interface
 
-        public ushort Attack { get; }
-        public ushort Defense { get; }
-        public ushort HitPoints { get; }
-        public ushort MagicAttack { get; }
-        public ushort MagicDefense { get; }
-        public ushort Speed { get; }
+        public short Attack { get; }
+        public short Defense { get; }
+        public short HitPoints { get; }
+        public short MagicAttack { get; }
+        public short MagicDefense { get; }
+        public short Speed { get; }
 
         #endregion
 
@@ -100,12 +59,12 @@ namespace EventSourcingDemo.Combat
 
         public static Attributes operator +(Attributes left, Attributes right) =>
             new(
-                (ushort)(left.Attack + right.Attack),
-                (ushort)(left.Defense + right.Defense),
-                (ushort)(left.HitPoints + right.HitPoints),
-                (ushort)(left.MagicAttack + right.MagicAttack),
-                (ushort)(left.MagicDefense + right.MagicDefense),
-                (ushort)(left.Speed + right.Speed)
+                (short)(left.Attack + right.Attack),
+                (short)(left.Defense + right.Defense),
+                (short)(left.HitPoints + right.HitPoints),
+                (short)(left.MagicAttack + right.MagicAttack),
+                (short)(left.MagicDefense + right.MagicDefense),
+                (short)(left.Speed + right.Speed)
             );
 
         #endregion
