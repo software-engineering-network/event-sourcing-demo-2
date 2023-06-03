@@ -15,7 +15,16 @@ namespace EventSourcingDemo.Combat
         {
         }
 
-        public static Result<Character> From(params Event[] stream)
+        #endregion
+
+        #region Static Interface
+
+        private static Character Apply(Character target, CharacterCreated @event) => new(@event);
+
+        public static Error CharacterAlreadyExists(string message = "") =>
+            new($"{nameof(Character)}.{nameof(CharacterAlreadyExists)}", message);
+
+        public static Result<Character> Rehydrate(params Event[] stream)
         {
             if (stream[0].GetType() != typeof(CharacterCreated))
                 return StreamError("could not rehydrate");
@@ -29,15 +38,6 @@ namespace EventSourcingDemo.Combat
 
             return character;
         }
-
-        #endregion
-
-        #region Static Interface
-
-        private static Character Apply(Character target, CharacterCreated @event) => new(@event);
-
-        public static Error CharacterAlreadyExists(string message = "") =>
-            new($"{nameof(Character)}.{nameof(CharacterAlreadyExists)}", message);
 
         #endregion
     }

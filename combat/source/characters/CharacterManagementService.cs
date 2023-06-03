@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using static EventSourcingDemo.Combat.Character;
 using static EventSourcingDemo.Combat.Command;
@@ -7,6 +8,7 @@ namespace EventSourcingDemo.Combat
 {
     public class CharacterManagementService :
         IHandler<CreateCharacter>,
+        IHandler<ModifyAttributes>,
         IHandler<RenameCharacter>,
         IHandler<SetAttributes>
     {
@@ -53,11 +55,17 @@ namespace EventSourcingDemo.Combat
 
         #endregion
 
+        #region IHandler<ModifyAttributes> Implementation
+
+        public Result Handle(ModifyAttributes command) => throw new NotImplementedException();
+
+        #endregion
+
         #region IHandler<RenameCharacter> Implementation
 
         public Result Handle(RenameCharacter command) =>
             _store.Find(command.GetEntityStreamId())
-                .Bind(stream => From(stream))
+                .Bind(Rehydrate)
                 .Bind(character => character.Rename(command.Name))
                 .Bind(characterRenamed => _store.Push(characterRenamed));
 
@@ -67,7 +75,7 @@ namespace EventSourcingDemo.Combat
 
         public Result Handle(SetAttributes command) =>
             _store.Find(command.GetEntityStreamId())
-                .Bind(stream => From(stream))
+                .Bind(Rehydrate)
                 .Bind(character => character.Set(command.Attributes))
                 .Bind(attributesSet => _store.Push(attributesSet));
 
@@ -75,11 +83,11 @@ namespace EventSourcingDemo.Combat
 
         #region Static Interface
 
-        private static List<Character> CreateCharacters(IEnumerable<Event> stream)
+        private static IEnumerable<Character> CreateCharacters(IEnumerable<Event> stream)
         {
             var entityStreamIds = stream.Select(x => new StreamId(Category, x.EntityId)).Distinct();
 
-            return entityStreamIds.Select(id => From(stream.Where(x => x.IsInEntity(id)).ToArray()).Value).ToList();
+            return entityStreamIds.Select(id => Rehydrate(stream.Where(x => x.IsInEntity(id)).ToArray()).Value);
         }
 
         #endregion

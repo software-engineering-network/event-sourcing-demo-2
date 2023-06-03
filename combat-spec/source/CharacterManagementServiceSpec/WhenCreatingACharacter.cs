@@ -7,14 +7,14 @@ using static EventSourcingDemo.CombatSpec.ObjectProvider;
 
 namespace EventSourcingDemo.CombatSpec.CharacterManagementServiceSpec
 {
-    public class WhenCreating
+    public class WhenCreatingACharacter
     {
         #region Core
 
         private readonly CreateCharacter _command;
         private readonly CharacterCreated _event;
 
-        public WhenCreating()
+        public WhenCreatingACharacter()
         {
             var service = CreateService(out var store);
             service.Handle(_command = new CreateCharacter(Attributes.Mario, "Mario"));

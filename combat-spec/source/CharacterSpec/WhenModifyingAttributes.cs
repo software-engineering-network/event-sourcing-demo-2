@@ -44,7 +44,7 @@ namespace EventSourcingDemo.CombatSpec.CharacterSpec
         [Fact]
         public void ThenReducerAddsAttributes()
         {
-            var character = From(
+            var character = Rehydrate(
                 GetCharacterCreated(),
                 new AttributesModified(new(10, 0, 0, 0, 0, 0))
             ).Value;

@@ -8,7 +8,7 @@ namespace EventSourcingDemo.CombatSpec
     {
         #region Static Interface
 
-        public static Character CreateCharacter() => From(GetCharacterCreated()).Value;
+        public static Character CreateCharacter() => Rehydrate(GetCharacterCreated()).Value;
 
         public static CharacterManagementService CreateService() => new(new MockEventStore());
 

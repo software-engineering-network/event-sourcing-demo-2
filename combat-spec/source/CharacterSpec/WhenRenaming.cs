@@ -13,7 +13,7 @@ namespace EventSourcingDemo.CombatSpec.CharacterSpec
         [Fact]
         public void ThenReducerRenamesCharacter()
         {
-            var character = From(
+            var character = Rehydrate(
                 GetCharacterCreated(),
                 new CharacterRenamed("Maria")
             ).Value;
