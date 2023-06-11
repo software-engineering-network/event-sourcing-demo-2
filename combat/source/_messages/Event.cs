@@ -22,5 +22,10 @@
         public bool IsInEntity(StreamId streamId) => Category == streamId.Category && EntityId == streamId.EntityId;
 
         #endregion
+
+        public interface IHandler<in T, TResult> where T : Event
+        {
+            Result<TResult> Handle(T @event);
+        }
     }
 }
