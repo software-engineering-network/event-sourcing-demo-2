@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using static EventSourcingDemo.Combat.Event;
 
 namespace EventSourcingDemo.Combat.CharacterView
 {
     /// <summary>
     ///     make composite
     /// </summary>
-    public class Aggregator : IAggregator, Event.IHandler<CharacterCreated>
+    public class Aggregator :
+        IAggregator,
+        IHandler<CharacterCreated>,
+        IHandler<CharacterRenamed>
     {
         private const string Key = "CharacterView";
         private readonly IViewRepository _repository;
@@ -54,6 +58,20 @@ namespace EventSourcingDemo.Combat.CharacterView
 
         #endregion
 
+        #region IHandler<CharacterRenamed> Implementation
+
+        public Result Handle(CharacterRenamed @event) =>
+            _repository.Find(Key)
+                .Bind(
+                    view =>
+                    {
+                        var next = RenameCharacter((CharacterView) view, @event);
+                        return _repository.Update(Key, next);
+                    }
+                );
+
+        #endregion
+
         #region Static Interface
 
         private static CharacterView CreateCharacter(CharacterView view, CharacterCreated @event) =>
@@ -88,7 +106,7 @@ namespace EventSourcingDemo.Combat.CharacterView
             var renamedCharacter = view.Characters.First(x => x.Id == @event.EntityId) with { Name = @event.Name };
 
             return new HashSet<Character> { renamedCharacter }
-                .Union(view.Characters)
+                .Union(view.Characters.Where(x => x.Id != renamedCharacter.Id))
                 .ToHashSet();
         }
 
