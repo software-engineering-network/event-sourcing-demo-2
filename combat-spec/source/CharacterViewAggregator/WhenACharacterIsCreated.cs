@@ -7,24 +7,32 @@ namespace EventSourcingDemo.CombatSpec.CharacterViewAggregator
 {
     public class WhenACharacterIsCreated
     {
+        #region Setup
+
+        private readonly Aggregator _aggregator;
+        private readonly MockEventStore _store = new();
+        private readonly MockViewRepository _viewRepository = new();
+
+        public WhenACharacterIsCreated()
+        {
+            _aggregator = new Aggregator(_store, _viewRepository);
+            _aggregator.Start();
+        }
+
+        #endregion
+
         #region Requirements
 
         [Fact]
         public void ThenCharacterIsAddedToView()
         {
-            var store = new MockEventStore();
-            var viewRepository = new MockViewRepository();
+            CharacterCreated @event;
+            ;
 
-            var aggregator = new Aggregator(store, viewRepository);
-            aggregator.Start();
+            _aggregator.Handle(@event = new CharacterCreated("Mario"));
 
-            var @event = new CharacterCreated("Mario");
-
-            aggregator.Handle(@event);
-
-            var view = (CharacterView) viewRepository.Find("CharacterView").Value;
-
-            var expected = new HashSet<Character> { new(@event.EntityId, "Mario") };
+            var view = (CharacterView) _viewRepository.Find("CharacterView").Value;
+            var expected = new List<Character> { new(@event.EntityId, "Mario") };
 
             view.Characters.Should().BeEquivalentTo(expected);
         }
