@@ -23,9 +23,9 @@
 
         #endregion
 
-        public interface IHandler<in T, TResult> where T : Event
+        public interface IHandler<in T> where T : Event
         {
-            Result<TResult> Handle(T @event);
+            Result Handle(T @event);
         }
     }
 }

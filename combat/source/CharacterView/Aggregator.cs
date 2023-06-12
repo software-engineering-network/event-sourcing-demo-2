@@ -4,8 +4,12 @@ using System.Linq;
 
 namespace EventSourcingDemo.Combat.CharacterView
 {
-    public class Aggregator : IAggregator
+    /// <summary>
+    ///     make composite
+    /// </summary>
+    public class Aggregator : IAggregator, Event.IHandler<CharacterCreated>
     {
+        private const string Key = "CharacterView";
         private readonly IViewRepository _repository;
         private readonly IEventStore _store;
         private static readonly Dictionary<Type, Func<CharacterView, Event, CharacterView>> Handlers = new();
@@ -14,8 +18,8 @@ namespace EventSourcingDemo.Combat.CharacterView
 
         static Aggregator()
         {
-            Register<CharacterCreated>(Handle);
-            Register<CharacterRenamed>(Handle);
+            Register<CharacterCreated>(CreateCharacter);
+            Register<CharacterRenamed>(RenameCharacter);
         }
 
         public Aggregator(IEventStore store, IViewRepository repository)
@@ -29,28 +33,33 @@ namespace EventSourcingDemo.Combat.CharacterView
         #region IAggregator Implementation
 
         public Result Start() =>
-            _repository.Create("CharacterView")
+            _repository.Create(Key, new CharacterView(new()))
                 .Bind(() => _store.Find(new(CharacterManagementService.Category)))
                 .Bind(Process)
-                .Bind(view => _repository.Update("CharacterView", view));
+                .Bind(view => _repository.Update(Key, view));
+
+        #endregion
+
+        #region IHandler<CharacterCreated> Implementation
+
+        public Result Handle(CharacterCreated @event) =>
+            _repository.Find(Key)
+                .Bind(
+                    view =>
+                    {
+                        var next = CreateCharacter((CharacterView) view, @event);
+                        return _repository.Update(Key, next);
+                    }
+                );
 
         #endregion
 
         #region Static Interface
 
-        private static CharacterView Handle(CharacterView view, CharacterCreated @event) =>
+        private static CharacterView CreateCharacter(CharacterView view, CharacterCreated @event) =>
             new(
                 view.Characters.Union(new Character[] { new(@event.EntityId, @event.Name) }).ToHashSet()
             );
-
-        private static CharacterView Handle(CharacterView view, CharacterRenamed @event)
-        {
-            var renamedCharacter = view.Characters.First(x => x.Id == @event.EntityId) with { Name = @event.Name };
-
-            return new HashSet<Character> { renamedCharacter }
-                .Union(view.Characters)
-                .ToHashSet();
-        }
 
         private static Result<CharacterView> Process(params Event[] stream)
         {
@@ -72,6 +81,15 @@ namespace EventSourcingDemo.Combat.CharacterView
         private static void Register<T>(Func<CharacterView, T, CharacterView> handler) where T : Event
         {
             Handlers.Add(typeof(T), (view, @event) => handler(view, (T) @event));
+        }
+
+        private static CharacterView RenameCharacter(CharacterView view, CharacterRenamed @event)
+        {
+            var renamedCharacter = view.Characters.First(x => x.Id == @event.EntityId) with { Name = @event.Name };
+
+            return new HashSet<Character> { renamedCharacter }
+                .Union(view.Characters)
+                .ToHashSet();
         }
 
         #endregion

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using EventSourcingDemo.Combat;
+using static EventSourcingDemo.Combat.Result;
 
 namespace EventSourcingDemo.CombatSpec
 {
@@ -20,7 +21,30 @@ namespace EventSourcingDemo.CombatSpec
         public Result Push(Event @event)
         {
             _events.Add(@event);
-            return Result.Success();
+            return Success();
+        }
+
+        #endregion
+    }
+
+    public class MockViewRepository : IViewRepository
+    {
+        private readonly Dictionary<string, View> _views = new();
+
+        #region IViewRepository Implementation
+
+        public Result Create(string name, View view)
+        {
+            _views.Add(name, view);
+            return Success();
+        }
+
+        public Result<View> Find(string name) => _views[name];
+
+        public Result Update(string name, View view)
+        {
+            _views[name] = view;
+            return Success();
         }
 
         #endregion
