@@ -31,6 +31,9 @@ namespace EventSourcingDemo.CombatSpec
         [Fact]
         public void ThenCategoryIsItemRegistration() => _event.Category.Should().Be(ItemManager.Category);
 
+        [Fact]
+        public void ThenEntityIdMatchesCommandEntityId() => _event.EntityId.Should().Be(_command.EntityId);
+
         #endregion
     }
 }
