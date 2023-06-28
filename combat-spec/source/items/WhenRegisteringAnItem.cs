@@ -2,8 +2,10 @@
 using EventSourcingDemo.Combat.Items;
 using FluentAssertions;
 using Xunit;
+using static EventSourcingDemo.Combat.Items.Item;
+using static EventSourcingDemo.CombatSpec.Items.ObjectProvider;
 
-namespace EventSourcingDemo.CombatSpec
+namespace EventSourcingDemo.CombatSpec.Items
 {
     public class WhenRegisteringAnItem
     {
@@ -14,9 +16,7 @@ namespace EventSourcingDemo.CombatSpec
 
         public WhenRegisteringAnItem()
         {
-            var store = new MockEventStore();
-            var service = new ItemManager(store);
-
+            var service = CreateService(out var store);
             service.Handle(_command = new RegisterItem("Mushroom"));
 
             var stream = store.Find(new StreamId(ItemManager.Category, _command.EntityId)).Value;
@@ -35,5 +35,25 @@ namespace EventSourcingDemo.CombatSpec
         public void ThenEntityIdMatchesCommandEntityId() => _event.EntityId.Should().Be(_command.EntityId);
 
         #endregion
+
+        public class GivenAConflictingItem
+        {
+            #region Requirements
+
+            [Fact]
+            public void ThenReturnItemAlreadyExistsError()
+            {
+                const string name = "Mushroom";
+
+                var service = CreateService();
+                service.Handle(new RegisterItem(name));
+
+                var error = service.Handle(new RegisterItem(name)).Error;
+
+                error.Should().Be(ItemAlreadyExists());
+            }
+
+            #endregion
+        }
     }
 }
