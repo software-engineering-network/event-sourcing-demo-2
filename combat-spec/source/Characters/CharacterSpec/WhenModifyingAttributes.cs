@@ -3,9 +3,9 @@ using EventSourcingDemo.Combat;
 using FluentAssertions;
 using Xunit;
 using static EventSourcingDemo.Combat.Character;
-using static EventSourcingDemo.CombatSpec.ObjectProvider;
+using static EventSourcingDemo.CombatSpec.Characters.ObjectProvider;
 
-namespace EventSourcingDemo.CombatSpec.CharacterSpec
+namespace EventSourcingDemo.CombatSpec.Characters.CharacterSpec
 {
     public class WhenModifyingAttributes
     {

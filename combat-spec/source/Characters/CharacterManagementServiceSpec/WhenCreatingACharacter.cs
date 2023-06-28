@@ -3,9 +3,9 @@ using FluentAssertions;
 using Xunit;
 using static EventSourcingDemo.Combat.Character;
 using static EventSourcingDemo.Combat.CharacterManagementService;
-using static EventSourcingDemo.CombatSpec.ObjectProvider;
+using static EventSourcingDemo.CombatSpec.Characters.ObjectProvider;
 
-namespace EventSourcingDemo.CombatSpec.CharacterManagementServiceSpec
+namespace EventSourcingDemo.CombatSpec.Characters.CharacterManagementServiceSpec
 {
     public class WhenCreatingACharacter
     {
