@@ -4,7 +4,7 @@ using FluentAssertions;
 using Xunit;
 using static System.Guid;
 
-namespace EventSourcingDemo.CombatSpec.CharacterViewAggregator
+namespace EventSourcingDemo.CombatSpec.Characters.CharacterViewAggregator
 {
     public class WhenACharacterIsRenamed
     {

@@ -5,7 +5,7 @@ using EventSourcingDemo.Combat.CharacterView;
 using FluentAssertions;
 using Xunit;
 
-namespace EventSourcingDemo.CombatSpec.CharacterViewSpec
+namespace EventSourcingDemo.CombatSpec.Characters.CharacterViewSpec
 {
     public class WhenSerializing
     {

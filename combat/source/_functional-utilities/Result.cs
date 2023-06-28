@@ -19,6 +19,7 @@ namespace EventSourcingDemo.Combat
         public bool WasFailure => !WasSuccessful;
         public bool WasSuccessful => Error is null;
 
+        public Result Bind(Func<Result> next) => WasFailure ? Error : next();
         public Result<T> Bind<T>(Func<Result<T>> next) => WasFailure ? Error : next();
 
         #endregion

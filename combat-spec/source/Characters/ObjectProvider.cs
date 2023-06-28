@@ -2,7 +2,7 @@
 using EventSourcingDemo.Combat;
 using static EventSourcingDemo.Combat.Character;
 
-namespace EventSourcingDemo.CombatSpec
+namespace EventSourcingDemo.CombatSpec.Characters
 {
     internal class ObjectProvider
     {

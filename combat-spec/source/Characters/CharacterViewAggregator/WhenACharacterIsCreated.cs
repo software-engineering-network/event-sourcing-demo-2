@@ -3,7 +3,7 @@ using EventSourcingDemo.Combat.CharacterView;
 using FluentAssertions;
 using Xunit;
 
-namespace EventSourcingDemo.CombatSpec.CharacterViewAggregator
+namespace EventSourcingDemo.CombatSpec.Characters.CharacterViewAggregator
 {
     public class WhenACharacterIsCreated
     {
