@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using static EventSourcingDemo.Combat.CharacterManagementService;
 
 namespace EventSourcingDemo.Combat
 {
@@ -36,7 +35,6 @@ namespace EventSourcingDemo.Combat
 
         #region Implementation
 
-        private StreamId StreamId => new(Category, Id);
         public Attributes Attributes { get; }
         public string Name { get; }
 

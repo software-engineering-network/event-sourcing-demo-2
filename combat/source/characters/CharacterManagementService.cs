@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using static EventSourcingDemo.Combat.Character;
 using static EventSourcingDemo.Combat.Command;
+using static EventSourcingDemo.Combat.Result;
 
 namespace EventSourcingDemo.Combat
 {
@@ -13,6 +13,7 @@ namespace EventSourcingDemo.Combat
         IHandler<SetAttributes>
     {
         public const string Category = "CharacterManagement";
+        public static readonly CategoryStreamId StreamId = new(Category);
         private readonly IEventStore _store;
 
         #region Creation
@@ -26,32 +27,22 @@ namespace EventSourcingDemo.Combat
 
         #region IHandler<CreateCharacter> Implementation
 
-        public Result Handle(CreateCharacter command)
-        {
-            var result = _store.Find(new(Category));
-
-            if (result.WasFailure)
-                return result.Error;
-
-            var stream = result.Value;
-
-            var characters = CreateCharacters(stream);
-
-            if (characters.Any(x => x.Name == command.Name))
-                return CharacterAlreadyExists();
-
-            return _store.Push(
-                new CharacterCreated(
-                    command.EntityId,
-                    command.Attributes,
-                    command.Name
-                )
-                {
-                    Category = Category,
-                    EntityId = command.EntityId
-                }
-            );
-        }
+        public Result Handle(CreateCharacter command) =>
+            _store.Find(StreamId)
+                .Bind(stream => CheckForDuplicates(command.Name, stream))
+                .Bind(
+                    () => _store.Push(
+                        new CharacterCreated(
+                            command.EntityId,
+                            command.Attributes,
+                            command.Name
+                        )
+                        {
+                            Category = Category,
+                            EntityId = command.EntityId
+                        }
+                    )
+                );
 
         #endregion
 
@@ -83,12 +74,10 @@ namespace EventSourcingDemo.Combat
 
         #region Static Interface
 
-        private static IEnumerable<Character> CreateCharacters(IEnumerable<Event> stream)
-        {
-            var entityStreamIds = stream.Select(x => new StreamId(Category, x.EntityId)).Distinct();
-
-            return entityStreamIds.Select(id => Rehydrate(stream.Where(x => x.IsInEntity(id)).ToArray()).Value);
-        }
+        private static Result CheckForDuplicates(string name, CategoryStream stream) =>
+            stream.ProjectAll(Rehydrate).Any(x => x.Name == name)
+                ? CharacterAlreadyExists()
+                : Success();
 
         #endregion
     }

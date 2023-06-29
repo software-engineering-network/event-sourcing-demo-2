@@ -13,7 +13,6 @@ namespace EventSourcingDemo.CombatSpec.Items
 
         private readonly RegisterItem _command;
         private readonly ItemRegistered _event;
-        private readonly Result _result;
         private readonly Event[] _stream;
 
         public WhenRegisteringAnItem()

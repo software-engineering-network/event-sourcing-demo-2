@@ -48,29 +48,29 @@ namespace EventSourcingDemo.Combat.Items
 
     public partial class ItemManager : IHandler<RegisterItem>
     {
+        public static readonly CategoryStreamId StreamId = new(Category);
+
+        #region Implementation
+
+        public EntityStreamId CreateEntityStreamId(Guid id) => new(Category, id);
+
+        #endregion
+
         #region IHandler<RegisterItem> Implementation
 
         public Result Handle(RegisterItem command) =>
-            _store.Find(new(Category))
-                .Bind(categoryStream => CheckForDuplicates(command.Name, categoryStream))
+            _store.Find(StreamId)
+                .Bind(stream => CheckForDuplicates(command.Name, stream))
                 .Bind(() => _store.Push(new ItemRegistered(command)));
 
         #endregion
 
         #region Static Interface
 
-        private static Result CheckForDuplicates(string name, Event[] categoryStream)
-        {
-            var entityStreamIds = categoryStream.Select(x => new StreamId(Category, x.EntityId)).Distinct();
-
-            var items = entityStreamIds.Select(
-                id => Rehydrate(categoryStream.Where(x => x.IsInEntity(id)).ToArray()).Value
-            );
-
-            return items.Any(x => x.Name == name)
+        private static Result CheckForDuplicates(string name, CategoryStream stream) =>
+            stream.ProjectAll(Rehydrate).Any(x => x.Name == name)
                 ? ItemAlreadyExists()
                 : Success();
-        }
 
         #endregion
     }

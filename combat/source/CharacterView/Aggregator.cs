@@ -38,7 +38,7 @@ namespace EventSourcingDemo.Combat.CharacterView
 
         public Result Start() =>
             _repository.Create(Key, new CharacterView(new()))
-                .Bind(() => _store.Find(new(CharacterManagementService.Category)))
+                .Bind(() => _store.Find(CharacterManagementService.StreamId))
                 .Bind(Process)
                 .Bind(view => _repository.Update(Key, view));
 
@@ -79,7 +79,7 @@ namespace EventSourcingDemo.Combat.CharacterView
                 view.Characters.Union(new Character[] { new(@event.EntityId, @event.Name) }).ToHashSet()
             );
 
-        private static Result<CharacterView> Process(params Event[] stream)
+        private static Result<CharacterView> Process(CategoryStream stream)
         {
             using var events = stream.ToList().GetEnumerator();
 
