@@ -1,4 +1,5 @@
-﻿using EventSourcingDemo.Combat;
+﻿using System.Linq;
+using EventSourcingDemo.Combat;
 using EventSourcingDemo.Combat.Items;
 using FluentAssertions;
 using Xunit;
@@ -13,16 +14,16 @@ namespace EventSourcingDemo.CombatSpec.Items
 
         private readonly RegisterItem _command;
         private readonly ItemRegistered _event;
-        private readonly Event[] _stream;
+        private readonly EntityStream _stream;
 
         public WhenRegisteringAnItem()
         {
             var service = CreateService(out var store);
             service.Handle(_command = new RegisterItem("Mushroom"));
 
-            _stream = store.Find(new StreamId(ItemManager.Category, _command.EntityId));
+            _stream = store.Find(ItemManager.CreateEntityStreamId(_command.EntityId));
 
-            _event = (ItemRegistered) _stream[0];
+            _event = _stream.First() as ItemRegistered;
         }
 
         #endregion

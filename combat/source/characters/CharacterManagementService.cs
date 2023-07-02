@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using EventSourcingDemo.Combat.Items;
 using static EventSourcingDemo.Combat.Character;
 using static EventSourcingDemo.Combat.Command;
 using static EventSourcingDemo.Combat.Result;
@@ -10,7 +12,8 @@ namespace EventSourcingDemo.Combat
         IHandler<CreateCharacter>,
         IHandler<ModifyAttributes>,
         IHandler<RenameCharacter>,
-        IHandler<SetAttributes>
+        IHandler<SetAttributes>,
+        IProjector<Character>
     {
         public const string Category = "CharacterManagement";
         public static readonly CategoryStreamId StreamId = new(Category);
@@ -22,6 +25,15 @@ namespace EventSourcingDemo.Combat
         {
             _store = store;
         }
+
+        #endregion
+
+        #region Implementation
+
+        private Result CheckForDuplicates(string name, CategoryStream stream) =>
+            Project(stream).Any(x => x.Name == name)
+                ? CharacterAlreadyExists()
+                : Success();
 
         #endregion
 
@@ -55,7 +67,7 @@ namespace EventSourcingDemo.Combat
         #region IHandler<RenameCharacter> Implementation
 
         public Result Handle(RenameCharacter command) =>
-            _store.Find(command.GetEntityStreamId())
+            _store.Find(command.CreateEntityStreamId())
                 .Bind(Rehydrate)
                 .Bind(character => character.Rename(command.Name))
                 .Bind(characterRenamed => _store.Push(characterRenamed));
@@ -65,19 +77,41 @@ namespace EventSourcingDemo.Combat
         #region IHandler<SetAttributes> Implementation
 
         public Result Handle(SetAttributes command) =>
-            _store.Find(command.GetEntityStreamId())
+            _store.Find(command.CreateEntityStreamId())
                 .Bind(Rehydrate)
                 .Bind(character => character.Set(command.Attributes))
                 .Bind(attributesSet => _store.Push(attributesSet));
 
         #endregion
 
-        #region Static Interface
+        #region IProjector<Character> Implementation
 
-        private static Result CheckForDuplicates(string name, CategoryStream stream) =>
-            stream.ProjectAll(Rehydrate).Any(x => x.Name == name)
-                ? CharacterAlreadyExists()
-                : Success();
+        public HashSet<Character> Project(CategoryStream stream)
+        {
+            var characters = new HashSet<Character>();
+
+            using var events = stream.GetEnumerator();
+
+            while (events.MoveNext())
+            {
+                var @event = events.Current;
+
+                if (@event is CharacterCreated characterCreated)
+                {
+                    characters.Add(Apply(null, characterCreated));
+                    continue;
+                }
+
+                var character = characters.First(x => x.Id == @event.EntityId);
+
+                characters.Remove(character);
+                characters.Add(Apply(character, @event));
+            }
+
+            return characters;
+        }
+
+        public Character Project(EntityStream stream) => throw new NotImplementedException();
 
         #endregion
     }

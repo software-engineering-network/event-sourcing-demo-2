@@ -52,7 +52,10 @@ namespace EventSourcingDemo.Combat.Items
 
         #region Implementation
 
-        public EntityStreamId CreateEntityStreamId(Guid id) => new(Category, id);
+        private Result CheckForDuplicates(string name, CategoryStream stream) =>
+            Project(stream).Any(x => x.Name == name)
+                ? ItemAlreadyExists()
+                : Success();
 
         #endregion
 
@@ -62,15 +65,6 @@ namespace EventSourcingDemo.Combat.Items
             _store.Find(StreamId)
                 .Bind(stream => CheckForDuplicates(command.Name, stream))
                 .Bind(() => _store.Push(new ItemRegistered(command)));
-
-        #endregion
-
-        #region Static Interface
-
-        private static Result CheckForDuplicates(string name, CategoryStream stream) =>
-            stream.ProjectAll(Rehydrate).Any(x => x.Name == name)
-                ? ItemAlreadyExists()
-                : Success();
 
         #endregion
     }

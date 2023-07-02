@@ -19,6 +19,8 @@
 
         #region Static Interface
 
+        public static Character Apply(Character target, Event @event) => Handlers[@event.GetType()](target, @event);
+
         public static Character Apply(Character target, AttributesModified @event) =>
             new(target, target.Attributes + @event.Delta);
 

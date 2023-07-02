@@ -3,7 +3,7 @@
     /// <summary>
     ///     Marker
     /// </summary>
-    public abstract class Projection
+    public abstract class Microservice
     {
     }
 }

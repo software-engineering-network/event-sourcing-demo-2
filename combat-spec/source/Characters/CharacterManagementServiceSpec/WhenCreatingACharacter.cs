@@ -1,4 +1,5 @@
-﻿using EventSourcingDemo.Combat;
+﻿using System.Linq;
+using EventSourcingDemo.Combat;
 using FluentAssertions;
 using Xunit;
 using static EventSourcingDemo.Combat.Character;
@@ -19,9 +20,9 @@ namespace EventSourcingDemo.CombatSpec.Characters.CharacterManagementServiceSpec
             var service = CreateService(out var store);
             service.Handle(_command = new CreateCharacter(Attributes.Mario, "Mario"));
 
-            var stream = store.Find(new StreamId(Category, _command.EntityId)).Value;
+            var stream = store.Find(new EntityStreamId(Category, _command.EntityId)).Value;
 
-            _event = (CharacterCreated) stream[0];
+            _event = stream.First() as CharacterCreated;
         }
 
         #endregion

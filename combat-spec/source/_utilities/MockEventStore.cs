@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using EventSourcingDemo.Combat;
 using static EventSourcingDemo.Combat.Result;
@@ -12,20 +11,14 @@ namespace EventSourcingDemo.CombatSpec
 
         #region IEventStore Implementation
 
-        public Result<Event[]> Find(StreamId streamId)
-        {
-            return streamId.EntityId is null
-                ? _events.Where(x => x.IsInCategory(streamId)).ToArray()
-                : _events.Where(x => x.IsInEntity(streamId)).ToArray();
-        }
-
         public Result<CategoryStream> Find(CategoryStreamId id)
         {
             var events = _events.Where(x => x.IsInCategory(id)).ToArray();
-            return CategoryStream.From(id.Category, events);
+            return CategoryStream.From(events);
         }
 
-        public Result<EntityStream> Find(EntityStreamId id) => throw new NotImplementedException();
+        public Result<EntityStream> Find(EntityStreamId id) =>
+            (EntityStream) _events.Where(x => x.IsInEntity(id)).ToArray();
 
         public Result Push(Event @event)
         {

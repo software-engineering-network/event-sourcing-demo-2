@@ -34,6 +34,8 @@ namespace EventSourcingDemo.Combat.Items
         public Guid Id { get; }
         public string Name { get; }
 
+        public Item Apply(Item target, Event @event) => Handlers[@event.GetType()](target, @event);
+
         #endregion
 
         #region Static Interface

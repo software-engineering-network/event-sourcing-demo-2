@@ -15,14 +15,14 @@ namespace EventSourcingDemo.Combat
         {
         }
 
-        public static Result<Character> Rehydrate(params Event[] stream)
+        public static Result<Character> Rehydrate(EntityStream stream)
         {
-            if (stream[0].GetType() != typeof(CharacterCreated))
+            if (stream.First().GetType() != typeof(CharacterCreated))
                 return StreamError("could not rehydrate");
 
-            var events = stream.ToList().GetEnumerator();
-
             Character character = null;
+
+            using var events = stream.GetEnumerator();
 
             while (events.MoveNext())
                 character = Handlers[events.Current.GetType()](character, events.Current);

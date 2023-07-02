@@ -14,8 +14,10 @@ namespace EventSourcingDemo.CombatSpec.Characters.CharacterSpec
         public void ThenReducerRenamesCharacter()
         {
             var character = Rehydrate(
-                GetCharacterCreated(),
-                new CharacterRenamed("Maria")
+                EntityStream.From(
+                    GetCharacterCreated(),
+                    new CharacterRenamed("Maria")
+                )
             ).Value;
 
             character.Name.Should().Be("Maria");

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace EventSourcingDemo.Combat
 {
-    public partial class Character : Aggregate
+    public partial class Character : Projection
     {
         private static readonly Dictionary<Type, Func<Character, Event, Character>> Handlers = new();
 
@@ -17,8 +17,9 @@ namespace EventSourcingDemo.Combat
             Register<CharacterRenamed>(Apply);
         }
 
-        private Character(Guid id, Attributes attributes, string name) : base(id)
+        private Character(Guid id, Attributes attributes, string name)
         {
+            Id = id;
             Attributes = attributes;
             Name = name;
         }
@@ -35,6 +36,7 @@ namespace EventSourcingDemo.Combat
 
         #region Implementation
 
+        public Guid Id { get; }
         public Attributes Attributes { get; }
         public string Name { get; }
 

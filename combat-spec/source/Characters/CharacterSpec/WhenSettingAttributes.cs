@@ -40,8 +40,10 @@ namespace EventSourcingDemo.CombatSpec.Characters.CharacterSpec
         {
             var attributes = new Attributes(10, 1, 5, 8, 15, 6);
             var character = Rehydrate(
-                GetCharacterCreated(),
-                new AttributesSet(attributes)
+                EntityStream.From(
+                    GetCharacterCreated(),
+                    new AttributesSet(attributes)
+                )
             ).Value;
 
             character.Attributes.Should().Be(attributes);

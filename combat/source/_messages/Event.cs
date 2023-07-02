@@ -4,6 +4,8 @@
     {
         #region Implementation
 
+        public EntityStreamId StreamId => new(Category, EntityId);
+
         public Event Apply(Metadata metadata, StreamId streamId, Version version)
         {
             var (category, entityId, _) = streamId;

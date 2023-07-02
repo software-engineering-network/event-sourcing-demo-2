@@ -4,7 +4,7 @@
     {
         #region Implementation
 
-        public StreamId GetEntityStreamId() => new(Category, EntityId);
+        public EntityStreamId CreateEntityStreamId() => new(Category, EntityId);
 
         #endregion
 

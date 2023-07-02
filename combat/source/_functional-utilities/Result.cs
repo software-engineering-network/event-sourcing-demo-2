@@ -52,6 +52,7 @@ namespace EventSourcingDemo.Combat
         public T Value { get; }
         public Result Bind(Func<T, Result> next) => WasFailure ? this : next(Value);
         public Result<T2> Bind<T2>(Func<T, Result<T2>> next) => WasFailure ? Error : next(Value);
+        public T OnError(Func<T> onError) => onError();
 
         #endregion
 
