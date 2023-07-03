@@ -21,6 +21,17 @@ namespace EventSourcingDemo.CombatSpec.CategoryStreams
             error.Should().Be(CategoryStream.EventsFromDifferentCategories());
         }
 
+        [Fact]
+        public void WithOneCategory_ThenIdExpected()
+        {
+            var stream = CategoryStream.From(
+                new Bar { Category = "Foo" },
+                new Bat { Category = "Foo" }
+            ).Value;
+
+            stream.Id.Should().Be(new CategoryStreamId("Foo"));
+        }
+
         #endregion
     }
 

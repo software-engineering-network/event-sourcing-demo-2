@@ -10,6 +10,7 @@ namespace EventSourcingDemo.Combat
 
         private CategoryStream(params Event[] events) : base(events)
         {
+            Id = new CategoryStreamId(events[0].StreamId.Category);
         }
 
         public static Result<CategoryStream> From(params Event[] events) =>
@@ -21,7 +22,7 @@ namespace EventSourcingDemo.Combat
 
         #region Implementation
 
-        public CategoryStreamId Id { get; private set; }
+        public CategoryStreamId Id { get; }
 
         public IEnumerable<EntityStreamId> GetEntityStreamIds() =>
             Events.Select(x => new EntityStreamId(Id.Category, x.EntityId)).Distinct();
