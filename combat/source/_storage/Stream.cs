@@ -28,11 +28,5 @@ namespace EventSourcingDemo.Combat
         public IEnumerator<Event> GetEnumerator() => Events.GetEnumerator();
 
         #endregion
-
-        #region Static Interface
-
-        public static Error EmptyStream() => new("empty-stream");
-
-        #endregion
     }
 }

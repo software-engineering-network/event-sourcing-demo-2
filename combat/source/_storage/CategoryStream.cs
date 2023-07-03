@@ -12,15 +12,10 @@ namespace EventSourcingDemo.Combat
         {
         }
 
-        public static Result<CategoryStream> From(params Event[] events)
-        {
-            if (events.Length == 0)
-                return EmptyStream();
-
-            return events.Select(x => x.StreamId.Category).Distinct().Count() == 1
-                ? new CategoryStream(events)
-                : EventsFromDifferentCategories();
-        }
+        public static Result<CategoryStream> From(params Event[] events) =>
+            events.Select(x => x.StreamId.Category).Distinct().Count() > 1
+                ? EventsFromDifferentCategories()
+                : new CategoryStream(events);
 
         #endregion
 

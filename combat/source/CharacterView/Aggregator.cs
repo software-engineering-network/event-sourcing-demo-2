@@ -38,7 +38,7 @@ namespace EventSourcingDemo.Combat.CharacterView
 
         public Result Start() =>
             _repository.Create(Key, new CharacterView(new()))
-                .Bind(() => _store.Find(CharacterManagementService.StreamId))
+                .Bind(() => _store.Find(CharacterManager.StreamId))
                 .Bind(Process)
                 .Bind(view => _repository.Update(Key, view));
 

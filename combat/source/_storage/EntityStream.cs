@@ -13,7 +13,7 @@ namespace EventSourcingDemo.Combat
         }
 
         public static Result<EntityStream> From(params Event[] events) =>
-            events.Select(x => x.StreamId).Distinct().Count() != 1
+            events.Select(x => x.StreamId).Distinct().Count() > 1
                 ? EventsFromMoreThanOneEntity()
                 : new EntityStream(events);
 

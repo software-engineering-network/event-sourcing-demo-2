@@ -48,7 +48,7 @@ namespace EventSourcingDemo.Combat
 
         public CreateCharacter(Attributes attributes, string name)
         {
-            Category = CharacterManagementService.Category;
+            Category = CharacterManager.Category;
             EntityId = Guid.NewGuid();
             Attributes = attributes;
             Name = name;
@@ -67,6 +67,8 @@ namespace EventSourcingDemo.Combat
         public Attributes Attributes { get; init; }
         public string Name { get; init; }
 
+        public CharacterCreated ToEvent() => new(this);
+
         #endregion
     }
 
@@ -74,11 +76,12 @@ namespace EventSourcingDemo.Combat
     {
         #region Creation
 
-        public CharacterCreated(Guid id, Attributes attributes, string name)
+        public CharacterCreated(CreateCharacter createCharacter)
         {
-            Id = id;
-            Attributes = attributes;
-            Name = name;
+            EntityId = createCharacter.EntityId;
+            Attributes = createCharacter.Attributes;
+            Name = createCharacter.Name;
+            Category = createCharacter.Category;
         }
 
         public void Deconstruct(out Attributes Attributes, out string Name)

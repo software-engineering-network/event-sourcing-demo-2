@@ -8,7 +8,7 @@ using static EventSourcingDemo.Combat.Result;
 
 namespace EventSourcingDemo.Combat
 {
-    public class CharacterManagementService :
+    public class CharacterManager :
         IHandler<CreateCharacter>,
         IHandler<ModifyAttributes>,
         IHandler<RenameCharacter>,
@@ -21,7 +21,7 @@ namespace EventSourcingDemo.Combat
 
         #region Creation
 
-        public CharacterManagementService(IEventStore store)
+        public CharacterManager(IEventStore store)
         {
             _store = store;
         }
@@ -42,19 +42,7 @@ namespace EventSourcingDemo.Combat
         public Result Handle(CreateCharacter command) =>
             _store.Find(StreamId)
                 .Bind(stream => CheckForDuplicates(command.Name, stream))
-                .Bind(
-                    () => _store.Push(
-                        new CharacterCreated(
-                            command.EntityId,
-                            command.Attributes,
-                            command.Name
-                        )
-                        {
-                            Category = Category,
-                            EntityId = command.EntityId
-                        }
-                    )
-                );
+                .Bind(() => _store.Push(new CharacterCreated(command)));
 
         #endregion
 
